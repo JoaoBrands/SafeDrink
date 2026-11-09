@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeDrink - Gestão de Lotes</title>
+    <style>
+        :root {
+            --primary: #5c1d24;
+            --secondary: #8c2630;
+            --accent: #d99b26;
+            --bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --border: #e2e8f0;
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+
+        .container { max-width: 950px; margin: 0 auto; }
+
+        .top-nav {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--primary); text-decoration: none; font-weight: bold;
+            font-size: 0.92rem; padding: 8px 14px; background: white;
+            border-radius: 6px; border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .btn-back:hover { background: #f8f9fa; border-color: var(--secondary); }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 25px 20px; border-radius: 12px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+        }
+        header h1 { font-size: 2.2rem; margin-bottom: 5px; }
+        header p { font-size: 0.95rem; opacity: 0.9; }
+
+        .card {
+            background: var(--card-bg); padding: 25px; border-radius: 10px;
+            border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        }
+        .card-title { color: var(--primary); font-size: 1.25rem; font-weight: bold; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label {
+            font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #495057;
+        }
+        .form-group input, .form-group select {
+            padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+            font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none; border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(140, 38, 48, 0.12);
+        }
+
+        .actions-bar {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
+        }
+        .btn {
+            padding: 11px 18px; border: none; border-radius: 6px; cursor: pointer;
+            font-weight: bold; font-size: 0.9rem; transition: all 0.2s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            flex: 1; min-width: 140px;
+        }
+        .btn-cadastrar { background: var(--primary); color: white; }
+        .btn-cadastrar:hover { background: var(--secondary); }
+        .btn-buscar { background: #34495e; color: white; }
+        .btn-buscar:hover { background: #2c3e50; }
+        .btn-atualizar { background: #e67e22; color: white; }
+        .btn-atualizar:hover { background: #d35400; }
+        .btn-excluir { background: var(--danger); color: white; }
+        .btn-excluir:hover { background: #c82333; }
+        .btn-listar { background: #6c757d; color: white; }
+        .btn-listar:hover { background: #5a6268; }
+
+        .result-card {
+            background: #272822; border-radius: 8px; padding: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 20px;
+        }
+        .result-card-header {
+            color: #f8f8f2; font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;
+        }
+        pre {
+            color: #a6e22e; font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.88rem; overflow-x: auto; max-height: 280px; margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="btn-back">← Voltar ao Menu Principal</a>
+    </div>
+
+    <header>
+        <h1>🏷️ Gestão de Lotes de Produção</h1>
+        <p>Rastreabilidade central de lotes, datas de envase/validade e identificação de adulterações</p>
+    </header>
+
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Dados do Lote</span>
+            <small style="color: #666;">* Digite o ID para buscar, atualizar ou excluir</small>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="id">ID do Lote:</label>
+                <input type="number" id="id" placeholder="Gerado automaticamente">
+            </div>
+
+            <div class="form-group">
+                <label for="numeroLote">Número do Lote:</label>
+                <input type="text" id="numeroLote" placeholder="Ex: LOT-2026-AUT01">
+            </div>
+
+            <div class="form-group">
+                <label for="dataFabricacao">Data de Fabricação:</label>
+                <input type="date" id="dataFabricacao">
+            </div>
+
+            <div class="form-group">
+                <label for="dataValidade">Data de Validade:</label>
+                <input type="date" id="dataValidade">
+            </div>
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade de Garrafas:</label>
+                <input type="number" id="quantidade" placeholder="Ex: 1000">
+            </div>
+
+            <div class="form-group">
+                <label for="suspeito">Status de Suspeição:</label>
+                <select id="suspeito">
+                    <option value="false">✅ Regular / Conforme</option>
+                    <option value="true">🚨 Suspeito / Adulterado</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fabricante">ID do Fabricante:</label>
+                <input type="number" id="fabricante" placeholder="Ex: 1">
+            </div>
+
+            <div class="form-group">
+                <label for="distribuidor">ID do Distribuidor:</label>
+                <input type="number" id="distribuidor" placeholder="Ex: 1">
+            </div>
+
+            <div class="form-group">
+                <label for="vinho">ID do Vinho (Opcional):</label>
+                <input type="number" id="vinho" placeholder="Ex: 1">
+            </div>
+
+            <div class="form-group">
+                <label for="destilado">ID do Destilado (Opcional):</label>
+                <input type="number" id="destilado" placeholder="Ex: 1">
+            </div>
+
+            <div class="form-group">
+                <label for="fermentado">ID do Fermentado (Opcional):</label>
+                <input type="number" id="fermentado" placeholder="Ex: 1">
+            </div>
+        </div>
+
+        <div class="actions-bar">
+            <button class="btn btn-cadastrar" onclick="cadastrar()">➕ Cadastrar Lote</button>
+            <button class="btn btn-buscar" onclick="buscar()">🔍 Buscar por ID</button>
+            <button class="btn btn-atualizar" onclick="atualizar()">✏️ Atualizar</button>
+            <button class="btn btn-excluir" onclick="excluir()">🗑️ Excluir</button>
+            <button class="btn btn-listar" onclick="listar()">📋 Listar Todos</button>
+        </div>
+
+        <div class="result-card">
+            <div class="result-card-header">
+                <span>📡 Resposta da API REST (Spring Boot):</span>
+            </div>
+            <pre id="resultado">Aguardando comando...</pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = "Erro: " + dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function criarObjetoId(id) {
+        if (!id || id.toString().trim() === "") {
+            return null;
+        }
+        return { id: Number(id) };
+    }
+
+    function lerLote(comId = false) {
+        let lote = {
+            numeroLote: document.getElementById("numeroLote").value,
+            dataFabricacao: document.getElementById("dataFabricacao").value,
+            dataValidade: document.getElementById("dataValidade").value,
+            quantidade: Number(document.getElementById("quantidade").value),
+            suspeito: document.getElementById("suspeito").value === "true",
+            fabricante: criarObjetoId(document.getElementById("fabricante").value),
+            distribuidor: criarObjetoId(document.getElementById("distribuidor").value),
+            destilado: criarObjetoId(document.getElementById("destilado").value),
+            fermentado: criarObjetoId(document.getElementById("fermentado").value),
+            vinho: criarObjetoId(document.getElementById("vinho").value)
+        };
+
+        if (comId) {
+            lote.id = Number(document.getElementById("id").value);
+        }
+
+        return lote;
+    }
+
+    function preencherLote(lote) {
+        document.getElementById("numeroLote").value = lote.numeroLote || "";
+        document.getElementById("dataFabricacao").value = lote.dataFabricacao || "";
+        document.getElementById("dataValidade").value = lote.dataValidade || "";
+        document.getElementById("quantidade").value = lote.quantidade ?? "";
+        document.getElementById("suspeito").value = lote.suspeito ? "true" : "false";
+        document.getElementById("fabricante").value = lote.fabricante ? lote.fabricante.id : "";
+        document.getElementById("distribuidor").value = lote.distribuidor ? lote.distribuidor.id : "";
+        document.getElementById("destilado").value = lote.destilado ? lote.destilado.id : "";
+        document.getElementById("fermentado").value = lote.fermentado ? lote.fermentado.id : "";
+        document.getElementById("vinho").value = lote.vinho ? lote.vinho.id : "";
+    }
+
+    function cadastrar() {
+        let lote = lerLote(false);
+
+        fetch("/api/bebidas/lote", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(lote)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados))
+        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+    }
+
+    function buscar() {
+        let id = document.getElementById("id").value;
+        if (!id) {
+            alert("Informe o ID para buscar!");
+            return;
+        }
+
+        fetch("/api/bebidas/lote/" + id)
+        .then(resposta => resposta.json())
+        .then(dados => {
+            if (dados.status === "Erro") {
+                mostrarResultado(dados);
+                return;
+            }
+
+            preencherLote(dados.object);
+            mostrarResultado(dados);
+        })
+        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+    }
+
+    function atualizar() {
+        let id = document.getElementById("id").value;
+        if (!id) {
+            alert("Informe o ID para atualizar!");
+            return;
+        }
+
+        let lote = lerLote(true);
+
+        fetch("/api/bebidas/lote/" + id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(lote)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados))
+        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+    }
+
+    function excluir() {
+        let id = document.getElementById("id").value;
+        if (!id) {
+            alert("Informe o ID para excluir!");
+            return;
+        }
+
+        fetch("/api/bebidas/lote/" + id, { method: "DELETE" })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados))
+        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+    }
+
+    function listar() {
+        fetch("/api/bebidas/lote")
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados))
+        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeDrink - Controle & Rastreabilidade de Bebidas</title>
+    <style>
+        :root {
+            --primary: #5c1d24;
+            --secondary: #8c2630;
+            --accent: #d99b26;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; padding: 30px 20px; border-radius: 12px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+        }
+        header h1 { font-size: 2.5rem; margin-bottom: 5px; letter-spacing: 1px; }
+        header p { font-size: 1rem; opacity: 0.9; }
+
+        .info-card {
+            background: var(--card-bg); padding: 18px 20px; border-radius: 10px;
+            border-left: 5px solid var(--accent); margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin: 25px 0 15px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-link {
+            background: var(--card-bg); padding: 20px 15px; border-radius: 10px;
+            text-align: center; text-decoration: none; color: var(--text);
+            border: 1px solid var(--border); transition: all 0.25s ease;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .card-link:hover {
+            transform: translateY(-4px); border-color: var(--secondary);
+            box-shadow: 0 6px 16px rgba(140, 38, 48, 0.15);
+        }
+        .card-link h3 { color: var(--primary); margin-bottom: 6px; font-size: 1.15rem; }
+        .card-link p { font-size: 0.88rem; color: #666; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: var(--card-bg); padding: 22px; border-radius: 10px;
+            border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .feature-card h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer;
+            font-weight: bold; transition: background 0.2s; width: 100%;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--secondary); }
+
+        pre {
+            background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px;
+            overflow-x: auto; max-height: 250px; font-size: 0.85rem; margin-top: 12px;
+        }
+
+        .qr-result {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .qr-result img {
+            width: 170px;
+            height: 170px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            display: none;
+            margin: 0 auto;
+        }
+        .qr-result p {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 6px;
+            word-break: break-all;
+        }
+        .qr-result a {
+            display: inline-block;
+            margin-top: 8px;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .qr-result a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🍷 SafeDrink</h1>
+        <p>Sistema Avançado de Gestão, Rastreabilidade e Qualidade de Bebidas</p>
+    </header>
+
+    <div class="info-card">
+        <p><strong>Desenvolvedores:</strong> João Gabriel Brandão (RA 12529615) & João Gabriel Oliveira (RA 12529796)</p>
+    </div>
+
+    <!-- SEÇÃO: PORTAL PÚBLICO DO CONSUMIDOR -->
+    <h2 class="section-title">🛡️ Portal de Autenticidade (Público)</h2>
+    <div class="grid-menu" style="grid-template-columns: 1fr;">
+        <a href="validar.html" class="card-link" style="border-left: 6px solid #28a745; text-align: left; align-items: flex-start; padding: 18px 25px;">
+            <h3 style="color: #28a745;">🔍 Consultar Selo Digital / Validar Autenticidade da Bebida</h3>
+            <p>Página pública para o consumidor escanear o QR Code ou digitar o lote e verificar se o produto é legítimo ou possui recall de falsificação.</p>
+        </a>
+    </div>
+
+    <!-- SEÇÃO: BEBIDAS -->
+    <h2 class="section-title">🍾 Tipos de Bebidas</h2>
+    <div class="grid-menu">
+        <a href="vinho.html" class="card-link">
+            <h3>🍷 Vinhos</h3>
+            <p>Safras, uvas, regiões e consulta de EAN</p>
+        </a>
+        <a href="destilado.html" class="card-link">
+            <h3>🥃 Destilados</h3>
+            <p>Envelhecimento, teor alcoólico e marcas</p>
+        </a>
+        <a href="fermentado.html" class="card-link">
+            <h3>🍺 Fermentados</h3>
+            <p>Cervejas, sidras e bebidas fermentadas</p>
+        </a>
+    </div>
+
+    <!-- SEÇÃO: RASTREABILIDADE & CADEIA -->
+    <h2 class="section-title">📦 Rastreabilidade & Distribuição</h2>
+    <div class="grid-menu">
+        <a href="lotes.html" class="card-link">
+            <h3>🏷️ Lotes</h3>
+            <p>Validade, fabricação e status de suspeição</p>
+        </a>
+        <a href="garrafa.html" class="card-link">
+            <h3>🍾 Garrafas</h3>
+            <p>Código de barras, data de envase e lote</p>
+        </a>
+        <a href="distribuidor.html" class="card-link">
+            <h3>🚚 Distribuidores</h3>
+            <p>CNPJ, região de atuação e contatos</p>
+        </a>
+        <a href="pontovenda.html" class="card-link">
+            <h3>🏪 Pontos de Venda</h3>
+            <p>Lojas, bares e estabelecimentos comerciais</p>
+        </a>
+    </div>
+
+    <!-- SEÇÃO: FISCALIZAÇÃO & QUALIDADE -->
+    <h2 class="section-title">🛡️ Fiscalização & Qualidade</h2>
+    <div class="grid-menu">
+        <a href="denuncias.html" class="card-link">
+            <h3>🚨 Denúncias</h3>
+            <p>Registro de adulteração e suspeitas</p>
+        </a>
+        <a href="analise.html" class="card-link">
+            <h3>🔬 Análises</h3>
+            <p>Laudos laboratoriais e averiguações</p>
+        </a>
+        <a href="recall.html" class="card-link">
+            <h3>⚠️ Recalls</h3>
+            <p>Ordens de recolhimento de lotes afetados</p>
+        </a>
+        <a href="alertas.html" class="card-link">
+            <h3>📢 Alertas</h3>
+            <p>Comunicados de segurança ao público</p>
+        </a>
+    </div>
+
+    <!-- SEÇÃO: PESSOAS & ATORES -->
+    <h2 class="section-title">👥 Atores do Sistema & Métricas</h2>
+    <div class="grid-menu">
+        <a href="consumidor.html" class="card-link">
+            <h3>👤 Consumidores</h3>
+            <p>Cadastro de clientes e denunciantes</p>
+        </a>
+        <a href="fabricante.html" class="card-link">
+            <h3>🏭 Fabricantes</h3>
+            <p>Produtores, registro MAPA e conformidade</p>
+        </a>
+        <a href="fiscal.html" class="card-link">
+            <h3>👮 Fiscais</h3>
+            <p>Agentes de inspeção e órgãos reguladores</p>
+        </a>
+        <a href="relatorio.html" class="card-link">
+            <h3>📊 Relatórios & KPIs</h3>
+            <p>Estatísticas gerais e métricas do sistema</p>
+        </a>
+    </div>
+
+    <!-- SEÇÃO: FERRAMENTAS INTEGRADAS -->
+    <div class="features-grid">
+        <!-- Consulta Rápida REST -->
+        <div class="feature-card">
+            <h2>⚡ Consulta Rápida (API Fetch)</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 12px; color: #666;">
+                Teste assíncrono direto com o Spring Boot usando JavaScript Vanilla nativo:
+            </p>
+            <button class="btn btn-primary" onclick="carregarVinhos()">Listar Vinhos via Fetch()</button>
+            <pre id="output">Clique no botão para consultar os dados do Spring Boot...</pre>
+        </div>
+
+        <!-- Selo de Rastreabilidade QR Code -->
+        <div class="feature-card">
+            <h2>📱 Selo de Rastreabilidade (QR Code)</h2>
+            <div class="form-group">
+                <label for="loteId">ID do Lote:</label>
+                <input type="number" id="loteId" placeholder="Ex: 1 (Autêntico) ou 2 (Recall)">
+            </div>
+            <button class="btn btn-primary" onclick="gerarQrCodeLote()">Gerar Selo Digital</button>
+
+            <div class="qr-result">
+                <img id="imgQrCode" src="" alt="QR Code Rastreio">
+                <p id="qrUrlText"></p>
+                <a id="qrLink" href="#" target="_blank" style="display: none;">🔗 Abrir Página de Validação em Nova Aba</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function gerarQrCodeLote() {
+        const loteId = document.getElementById("loteId").value.trim();
+        if (!loteId) {
+            alert("Digite o ID do lote!");
+            return;
+        }
+
+        // Aponta para a tela pública de validação amigável do consumidor
+        const validacaoUrl = `${window.location.origin}/validar.html?lote=${loteId}`;
+
+        // Geração da URL da QRServer API
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(validacaoUrl)}`;
+
+        const img = document.getElementById("imgQrCode");
+        const txt = document.getElementById("qrUrlText");
+        const link = document.getElementById("qrLink");
+
+        img.src = qrCodeUrl;
+        img.style.display = "inline-block";
+        txt.textContent = "Destino do QR Code: " + validacaoUrl;
+        link.href = validacaoUrl;
+        link.style.display = "inline-block";
+    }
+
+    function carregarVinhos() {
+        const output = document.getElementById("output");
+        output.textContent = "Carregando dados da API...";
+
+        fetch("/api/bebidas/vinho")
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "OK") {
+                    output.textContent = JSON.stringify(data.object, null, 2);
+                } else {
+                    output.textContent = "Erro: " + data.mensagemErro;
+                }
+            })
+            .catch(err => {
+                output.textContent = "Erro de conexão com o servidor: " + err;
+            });
+    }
+</script>
+</body>
+</html>

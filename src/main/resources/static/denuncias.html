@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Denuncias</title>
+    <style>
+        button {
+            width: 300px;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SafeDrink</h1>
+    <h2>CADASTRO DE DENÚNCIAS</h2>
+
+    ID:
+    <input type="text" id="id">
+    <br><br>
+
+    Data:
+    <input type="text" id="data">
+    <br><br>
+
+    Descrição:
+    <input type="text" id="descricao">
+    <br><br>
+
+    Status:
+    <input type="text" id="status">
+    <br><br>
+
+    ID DO CONSUMIDOR:
+    <input type="text" id="consumidor">
+    <br><br>
+
+    ID DA GARRAFA:
+    <input type="text" id="garrafa">
+    <br><br>
+
+    <button onclick="cadastrar()">CADASTRAR DENÚNCIA</button>
+    <button onclick="buscar()">BUSCAR DENÚNCIA</button>
+
+    <br><br>
+
+    <button onclick="atualizar()">ATUALIZAR DENÚNCIA</button>
+    <button onclick="excluir()">EXCLUIR DENÚNCIA</button>
+
+    <br><br>
+
+    <button onclick="listar()">LISTAR DENÚNCIAS</button>
+
+    <br><br>
+
+    <a href="index.html">
+        <button>VOLTAR AO MENU</button>
+    </a>
+
+    <pre id="resultado"></pre>
+
+    <script>
+
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function criarObjetoId(id) {
+        if (id === "") {
+            return null;
+        }
+        return { id: Number(id) };
+    }
+
+    function cadastrar() {
+
+        let denuncia = {
+            data: document.getElementById("data").value,
+            descricao: document.getElementById("descricao").value,
+            status: document.getElementById("status").value,
+            consumidor: criarObjetoId(document.getElementById("consumidor").value),
+            garrafa: criarObjetoId(document.getElementById("garrafa").value)
+        };
+
+        fetch("/api/bebidas/denuncia", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(denuncia)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function buscar() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/denuncia/" + id)
+        .then(resposta => resposta.json())
+        .then(dados => {
+
+            if (dados.status === "Erro") {
+                mostrarResultado(dados);
+                return;
+            }
+
+            let denuncia = dados.object;
+
+            document.getElementById("data").value = denuncia.data;
+            document.getElementById("descricao").value = denuncia.descricao;
+            document.getElementById("status").value = denuncia.status;
+            document.getElementById("consumidor").value = denuncia.consumidor ? denuncia.consumidor.id : "";
+            document.getElementById("garrafa").value = denuncia.garrafa ? denuncia.garrafa.id : "";
+
+            mostrarResultado(dados);
+        });
+    }
+
+    function atualizar() {
+
+        let id = document.getElementById("id").value;
+
+        let denuncia = {
+            id: Number(id),
+            data: document.getElementById("data").value,
+            descricao: document.getElementById("descricao").value,
+            status: document.getElementById("status").value,
+            consumidor: criarObjetoId(document.getElementById("consumidor").value),
+            garrafa: criarObjetoId(document.getElementById("garrafa").value)
+        };
+
+        fetch("/api/bebidas/denuncia/" + id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(denuncia)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function excluir() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/denuncia/" + id, {
+            method: "DELETE"
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function listar() {
+
+        fetch("/api/bebidas/denuncia")
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    </script>
+</body>
+</html>

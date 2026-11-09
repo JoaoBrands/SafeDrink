@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Consumidores</title>
+    <style>
+        button {
+            width: 300px;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SafeDrink</h1>
+    <h2>CADASTRO DE CONSUMIDORES</h2>
+
+    ID:
+    <input type="text" id="id">
+    <br><br>
+
+    Nome:
+    <input type="text" id="nome">
+    <br><br>
+
+    CPF:
+    <input type="text" id="cpf">
+    <br><br>
+
+    E-mail:
+    <input type="text" id="email">
+    <br><br>
+
+    Telefone:
+    <input type="text" id="telefone">
+    <br><br>
+
+    Data de Cadastro:
+    <input type="text" id="dataCadastro">
+    <br><br>
+
+    Endereço:
+    <input type="text" id="endereco">
+    <br><br>
+
+    Cidade:
+    <input type="text" id="cidade">
+    <br><br>
+
+    Estado:
+    <input type="text" id="estado">
+    <br><br>
+
+    <button onclick="cadastrar()">CADASTRAR CONSUMIDOR</button>
+    <button onclick="buscar()">BUSCAR CONSUMIDOR</button>
+
+    <br><br>
+
+    <button onclick="atualizar()">ATUALIZAR CONSUMIDOR</button>
+    <button onclick="excluir()">EXCLUIR CONSUMIDOR</button>
+
+    <br><br>
+
+    <button onclick="listar()">LISTAR CONSUMIDORES</button>
+
+    <br><br>
+
+    <a href="index.html">
+        <button>VOLTAR</button>
+    </a>
+
+    <pre id="resultado"></pre>
+
+    <script>
+
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function obterConsumidor(comId = false) {
+        let consumidor = {
+            nome: document.getElementById("nome").value,
+            cpf: document.getElementById("cpf").value,
+            email: document.getElementById("email").value,
+            telefone: document.getElementById("telefone").value,
+            dataCadastro: document.getElementById("dataCadastro").value,
+            endereco: document.getElementById("endereco").value,
+            cidade: document.getElementById("cidade").value,
+            estado: document.getElementById("estado").value
+        };
+
+        if (comId) {
+            consumidor.id = Number(document.getElementById("id").value);
+        }
+
+        return consumidor;
+    }
+
+    function cadastrar() {
+
+        let consumidor = obterConsumidor(false);
+
+        fetch("/api/bebidas/consumidor", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(consumidor)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function buscar() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/consumidor/" + id)
+        .then(resposta => resposta.json())
+        .then(dados => {
+
+            if (dados.status === "Erro") {
+                mostrarResultado(dados);
+                return;
+            }
+
+            let consumidor = dados.object;
+
+            document.getElementById("nome").value = consumidor.nome || "";
+            document.getElementById("cpf").value = consumidor.cpf || "";
+            document.getElementById("email").value = consumidor.email || "";
+            document.getElementById("telefone").value = consumidor.telefone || "";
+            document.getElementById("dataCadastro").value = consumidor.dataCadastro || "";
+            document.getElementById("endereco").value = consumidor.endereco || "";
+            document.getElementById("cidade").value = consumidor.cidade || "";
+            document.getElementById("estado").value = consumidor.estado || "";
+
+            mostrarResultado(dados);
+        });
+    }
+
+    function atualizar() {
+
+        let id = document.getElementById("id").value;
+        let consumidor = obterConsumidor(true);
+
+        fetch("/api/bebidas/consumidor/" + id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(consumidor)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function excluir() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/consumidor/" + id, {
+            method: "DELETE"
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function listar() {
+
+        fetch("/api/bebidas/consumidor")
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    </script>
+</body>
+</html>

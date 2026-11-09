@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Análises</title>
+    <style>
+        button {
+            width: 300px;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SafeDrink</h1>
+    <h2>CADASTRO DE ANÁLISES</h2>
+
+    ID:
+    <input type="text" id="id">
+    <br><br>
+
+    Data:
+    <input type="text" id="data">
+    <br><br>
+
+    Resultado:
+    <input type="text" id="resultadoAnalise">
+    <br><br>
+
+    Laudo:
+    <input type="text" id="laudo">
+    <br><br>
+
+    Laboratório:
+    <input type="text" id="laboratorio">
+    <br><br>
+
+    ID do Fiscal:
+    <input type="text" id="fiscalId">
+    <br><br>
+
+    ID da Denúncia:
+    <input type="text" id="denunciaId">
+    <br><br>
+
+    <button onclick="cadastrar()">CADASTRAR ANÁLISE</button>
+    <button onclick="buscar()">BUSCAR ANÁLISE</button>
+
+    <br><br>
+
+    <button onclick="atualizar()">ATUALIZAR ANÁLISE</button>
+    <button onclick="excluir()">EXCLUIR ANÁLISE</button>
+
+    <br><br>
+
+    <button onclick="listar()">LISTAR ANÁLISES</button>
+
+    <br><br>
+
+    <a href="index.html">
+        <button>VOLTAR</button>
+    </a>
+
+    <pre id="resultado"></pre>
+
+    <script>
+
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function criarObjetoId(id) {
+        if (!id || id.trim() === "") {
+            return null;
+        }
+        return { id: Number(id) };
+    }
+
+    function obterAnalise(comId = false) {
+        let fiscalVal = document.getElementById("fiscalId").value.trim();
+        let denunciaVal = document.getElementById("denunciaId").value.trim();
+
+        let analise = {
+            data: document.getElementById("data").value,
+            resultado: document.getElementById("resultadoAnalise").value,
+            laudo: document.getElementById("laudo").value,
+            laboratorio: document.getElementById("laboratorio").value,
+            fiscal: criarObjetoId(fiscalVal),
+            fiscalId: fiscalVal !== "" ? Number(fiscalVal) : null,
+            denuncia: criarObjetoId(denunciaVal),
+            denunciaId: denunciaVal !== "" ? Number(denunciaVal) : null
+        };
+
+        if (comId) {
+            analise.id = Number(document.getElementById("id").value);
+        }
+
+        return analise;
+    }
+
+    function cadastrar() {
+
+        let analise = obterAnalise(false);
+
+        fetch("/api/bebidas/analise", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(analise)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function buscar() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/analise/" + id)
+        .then(resposta => resposta.json())
+        .then(dados => {
+
+            if (dados.status === "Erro") {
+                mostrarResultado(dados);
+                return;
+            }
+
+            let analise = dados.object;
+
+            document.getElementById("data").value = analise.data || "";
+            document.getElementById("resultadoAnalise").value = analise.resultado || "";
+            document.getElementById("laudo").value = analise.laudo || "";
+            document.getElementById("laboratorio").value = analise.laboratorio || "";
+            document.getElementById("fiscalId").value = analise.fiscal ? analise.fiscal.id : (analise.fiscalId || "");
+            document.getElementById("denunciaId").value = analise.denuncia ? analise.denuncia.id : (analise.denunciaId || "");
+
+            mostrarResultado(dados);
+        });
+    }
+
+    function atualizar() {
+
+        let id = document.getElementById("id").value;
+        let analise = obterAnalise(true);
+
+        fetch("/api/bebidas/analise/" + id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(analise)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function excluir() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/analise/" + id, {
+            method: "DELETE"
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function listar() {
+
+        fetch("/api/bebidas/analise")
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    </script>
+</body>
+</html>

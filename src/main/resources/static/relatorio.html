@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Relatórios e Estatísticas</title>
+    <style>
+        button {
+            width: 320px;
+            padding: 10px;
+            margin: 5px;
+        }
+        input {
+            padding: 6px;
+            margin: 5px 0;
+            width: 200px;
+        }
+        fieldset {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            max-width: 600px;
+        }
+        legend {
+            font-weight: bold;
+            color: #5c1d24;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SafeDrink</h1>
+    <h2>PAINEL DE RELATÓRIOS & ESTATÍSTICAS</h2>
+
+    <fieldset>
+        <legend>Estatísticas Gerais</legend>
+        <button onclick="obterEstatisticas()">OBTER ESTATÍSTICAS DO SISTEMA</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>Consultas por Lote</legend>
+        ID do Lote: <input type="number" id="loteId" placeholder="Ex: 1">
+        <br>
+        <button onclick="totalGarrafasLote()">TOTAL DE GARRAFAS DO LOTE</button>
+        <button onclick="percentualFalsificadoLote()">PERCENTUAL FALSIFICADO DO LOTE</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>Consultas por Fabricante</legend>
+        ID do Fabricante: <input type="number" id="fabricanteId" placeholder="Ex: 1">
+        <br>
+        <button onclick="taxaReincidenciaFabricante()">TAXA DE REINCIDÊNCIA</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>Tempo de Resolução</legend>
+        ID da Denúncia: <input type="number" id="denunciaId" placeholder="Ex: 1">
+        <br>
+        <button onclick="tempoResolucaoDenuncia()">TEMPO DE RESOLUÇÃO DA DENÚNCIA</button>
+    </fieldset>
+
+    <fieldset>
+        <legend>Alertas de Recall</legend>
+        ID do Recall: <input type="number" id="recallId" placeholder="Ex: 1">
+        <br>
+        <button onclick="totalAlertasRecall()">TOTAL DE ALERTAS DO RECALL</button>
+    </fieldset>
+
+    <br>
+    <a href="index.html">
+        <button>VOLTAR AO MENU</button>
+    </a>
+
+    <h3>Resultado:</h3>
+    <pre id="resultado" style="background: #272822; color: #f8f8f2; padding: 15px; border-radius: 6px; max-width: 700px; overflow-x: auto;">Clique em uma das opções acima para visualizar os dados...</pre>
+
+    <script>
+
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = "Erro: " + dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function obterEstatisticas() {
+        fetch("/api/bebidas/relatorio/estatisticas")
+            .then(resposta => resposta.json())
+            .then(dados => mostrarResultado(dados))
+            .catch(err => {
+                document.getElementById("resultado").textContent = "Erro na requisição: " + err;
+            });
+    }
+
+    function totalGarrafasLote() {
+        let id = document.getElementById("loteId").value;
+        if (!id) {
+            alert("Informe o ID do lote!");
+            return;
+        }
+
+        fetch("/api/bebidas/relatorio/lote/" + id + "/total-garrafas")
+            .then(resposta => resposta.json())
+            .then(dados => mostrarResultado(dados))
+            .catch(err => {
+                document.getElementById("resultado").textContent = "Erro na requisição: " + err;
+            });
+    }
+
+    function percentualFalsificadoLote() {
+        let id = document.getElementById("loteId").value;
+        if (!id) {
+            alert("Informe o ID do lote!");
+            return;
+        }
+
+        fetch("/api/bebidas/relatorio/lote/" + id + "/percentual-falsificado")
+            .then(resposta => resposta.json())
+            .then(dados => mostrarResultado(dados))
+            .catch(err => {
+                document.getElementById("resultado").textContent = "Erro na requisição: " + err;
+            });
+    }
+
+    function taxaReincidenciaFabricante() {
+        let id = document.getElementById("fabricanteId").value;
+        if (!id) {
+            alert("Informe o ID do fabricante!");
+            return;
+        }
+
+        fetch("/api/bebidas/relatorio/fabricante/" + id + "/taxa-reincidencia")
+            .then(resposta => resposta.json())
+            .then(dados => mostrarResultado(dados))
+            .catch(err => {
+                document.getElementById("resultado").textContent = "Erro na requisição: " + err;
+            });
+    }
+
+    function tempoResolucaoDenuncia() {
+        let id = document.getElementById("denunciaId").value;
+        if (!id) {
+            alert("Informe o ID da denúncia!");
+            return;
+        }
+
+        fetch("/api/bebidas/relatorio/denuncia/" + id + "/tempo-resolucao")
+            .then(resposta => resposta.json())
+            .then(dados => mostrarResultado(dados))
+            .catch(err => {
+                document.getElementById("resultado").textContent = "Erro na requisição: " + err;
+            });
+    }
+
+    function totalAlertasRecall() {
+        let id = document.getElementById("recallId").value;
+        if (!id) {
+            alert("Informe o ID do recall!");
+            return;
+        }
+
+        fetch("/api/bebidas/relatorio/recall/" + id + "/total-alertas")
+            .then(resposta => resposta.json())
+            .then(dados => mostrarResultado(dados))
+            .catch(err => {
+                document.getElementById("resultado").textContent = "Erro na requisição: " + err;
+            });
+    }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Recalls</title>
+    <style>
+        button {
+            width: 300px;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SafeDrink</h1>
+    <h2>CADASTRO DE RECALLS</h2>
+
+    ID:
+    <input type="text" id="id">
+    <br><br>
+
+    Data de Início:
+    <input type="text" id="dataInicio">
+    <br><br>
+
+    Data de Término:
+    <input type="text" id="dataFim">
+    <br><br>
+
+    Motivo:
+    <input type="text" id="motivo">
+    <br><br>
+
+    Status:
+    <input type="text" id="statusRecall">
+    <br><br>
+
+    ID do Lote:
+    <input type="text" id="loteId">
+    <br><br>
+
+    <button onclick="cadastrar()">CADASTRAR RECALL</button>
+    <button onclick="buscar()">BUSCAR RECALL</button>
+
+    <br><br>
+
+    <button onclick="atualizar()">ATUALIZAR RECALL</button>
+    <button onclick="excluir()">EXCLUIR RECALL</button>
+
+    <br><br>
+
+    <button onclick="listar()">LISTAR RECALLS</button>
+
+    <br><br>
+
+    <a href="index.html">
+        <button>VOLTAR</button>
+    </a>
+
+    <pre id="resultado"></pre>
+
+    <script>
+
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function criarObjetoId(id) {
+        if (!id || id.trim() === "") {
+            return null;
+        }
+        return { id: Number(id) };
+    }
+
+    function obterRecall(comId = false) {
+        let loteVal = document.getElementById("loteId").value.trim();
+
+        let recall = {
+            dataInicio: document.getElementById("dataInicio").value,
+            dataFim: document.getElementById("dataFim").value,
+            motivo: document.getElementById("motivo").value,
+            status: document.getElementById("statusRecall").value,
+            lote: criarObjetoId(loteVal),
+            loteId: loteVal !== "" ? Number(loteVal) : null
+        };
+
+        if (comId) {
+            recall.id = Number(document.getElementById("id").value);
+        }
+
+        return recall;
+    }
+
+    function cadastrar() {
+
+        let recall = obterRecall(false);
+
+        fetch("/api/bebidas/recall", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(recall)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function buscar() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/recall/" + id)
+        .then(resposta => resposta.json())
+        .then(dados => {
+
+            if (dados.status === "Erro") {
+                mostrarResultado(dados);
+                return;
+            }
+
+            let recall = dados.object;
+
+            document.getElementById("dataInicio").value = recall.dataInicio || "";
+            document.getElementById("dataFim").value = recall.dataFim || "";
+            document.getElementById("motivo").value = recall.motivo || "";
+            document.getElementById("statusRecall").value = recall.status || "";
+            document.getElementById("loteId").value = recall.lote ? recall.lote.id : (recall.loteId || "");
+
+            mostrarResultado(dados);
+        });
+    }
+
+    function atualizar() {
+
+        let id = document.getElementById("id").value;
+        let recall = obterRecall(true);
+
+        fetch("/api/bebidas/recall/" + id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(recall)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function excluir() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/recall/" + id, {
+            method: "DELETE"
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function listar() {
+
+        fetch("/api/bebidas/recall")
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    </script>
+</body>
+</html>

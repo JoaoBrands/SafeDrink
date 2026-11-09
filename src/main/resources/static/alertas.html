@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro e listagem de alertas</title>
+    <style>
+        button {
+            width: 300px;
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SafeDrink</h1>
+    <h2>Cadastro e listagem de alertas</h2>
+
+    ID:
+    <input type="text" id="id">
+    <br><br>
+
+    DATA:
+    <input type="text" id="data">
+    <br><br>
+
+    NÍVEL:
+    <input type="text" id="nivel">
+    <br><br>
+
+    REGIÃO:
+    <input type="text" id="regiao">
+    <br><br>
+
+    ID DO RECALL:
+    <input type="text" id="recall">
+    <br><br>
+
+    <button onclick="cadastrar()">CADASTRAR ALERTA</button>
+    <button onclick="buscar()">BUSCAR ALERTA</button>
+
+    <br><br>
+
+    <button onclick="atualizar()">ATUALIZAR ALERTA</button>
+    <button onclick="excluir()">EXCLUIR ALERTA</button>
+
+    <br><br>
+
+    <button onclick="listar()">LISTAR ALERTAS</button>
+
+    <br><br>
+
+    <a href="index.html">
+        <button>VOLTAR AO MENU</button>
+    </a>
+
+    <pre id="resultado"></pre>
+
+    <script>
+
+    function mostrarResultado(dados) {
+        if (dados.status === "Erro") {
+            document.getElementById("resultado").textContent = dados.mensagemErro;
+            return;
+        }
+
+        document.getElementById("resultado").textContent =
+            JSON.stringify(dados.object, null, 2);
+    }
+
+    function criarObjetoId(id) {
+        if (id === "") {
+            return null;
+        }
+        return { id: Number(id) };
+    }
+
+    function cadastrar() {
+
+        let alerta = {
+            data: document.getElementById("data").value,
+            nivel: document.getElementById("nivel").value,
+            regiao: document.getElementById("regiao").value,
+            recall: criarObjetoId(document.getElementById("recall").value)
+        };
+
+        fetch("/api/bebidas/alerta", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(alerta)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function buscar() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/alerta/" + id)
+        .then(resposta => resposta.json())
+        .then(dados => {
+
+            if (dados.status === "Erro") {
+                mostrarResultado(dados);
+                return;
+            }
+
+            let alerta = dados.object;
+
+            document.getElementById("data").value = alerta.data;
+            document.getElementById("nivel").value = alerta.nivel;
+            document.getElementById("regiao").value = alerta.regiao;
+            document.getElementById("recall").value = alerta.recall ? alerta.recall.id : "";
+
+            mostrarResultado(dados);
+        });
+    }
+
+    function atualizar() {
+
+        let id = document.getElementById("id").value;
+
+        let alerta = {
+            id: Number(id),
+            data: document.getElementById("data").value,
+            nivel: document.getElementById("nivel").value,
+            regiao: document.getElementById("regiao").value,
+            recall: criarObjetoId(document.getElementById("recall").value)
+        };
+
+        fetch("/api/bebidas/alerta/" + id, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(alerta)
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function excluir() {
+
+        let id = document.getElementById("id").value;
+
+        fetch("/api/bebidas/alerta/" + id, {
+            method: "DELETE"
+        })
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    function listar() {
+
+        fetch("/api/bebidas/alerta")
+        .then(resposta => resposta.json())
+        .then(dados => mostrarResultado(dados));
+    }
+
+    </script>
+
+</body>
+</html>
