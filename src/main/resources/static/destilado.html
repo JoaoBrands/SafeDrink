@@ -3,167 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeDrink - Gestão de Destilados</title>
+    <title>SafeDrink — Gestão de Destilados (Impeccable Light)</title>
     <style>
         :root {
-            --primary: #5c1d24;
-            --secondary: #8c2630;
-            --accent: #d99b26;
-            --bg: #f4f6f9;
-            --card-bg: #ffffff;
-            --text: #2c3e50;
-            --border: #e2e8f0;
-            --success: #28a745;
-            --danger: #dc3545;
+            --ks-kinpaku-gold: oklch(76% 0.14 82); --ks-kinpaku-hover: oklch(71% 0.15 82);
+            --ks-patina: oklch(49% 0.08 188); --ks-patina-light: oklch(93% 0.03 188);
+            --ks-bg: oklch(97% 0.008 95); --ks-surface: #ffffff; --ks-surface-subtle: oklch(95% 0.008 95); --ks-input-bg: #ffffff;
+            --ks-rule: oklch(25% 0.02 95 / 0.12); --ks-rule-strong: oklch(76% 0.14 82 / 0.6); --ks-rule-focus: oklch(49% 0.08 188 / 0.8);
+            --ks-ink: oklch(18% 0.02 95); --ks-text: oklch(25% 0.018 95); --ks-muted: oklch(45% 0.015 95); --ks-faint: oklch(58% 0.012 95);
+            --ks-vermilion: oklch(52% 0.16 35);
+            --ks-font-ui: "Albert Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --ks-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 20px; }
-
-        .container { max-width: 950px; margin: 0 auto; }
-
-        .top-nav {
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--ks-font-ui); }
+        body { background-color: var(--ks-bg); color: var(--ks-text); min-height: 100vh; padding: 24px 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 960px; margin: 0 auto; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--ks-rule); }
+        .nav-link { font-family: var(--ks-font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ks-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-link:hover { color: var(--ks-patina); }
+        .page-header { background-color: var(--ks-surface); border: 1px solid var(--ks-rule); border-top: 3px solid var(--ks-kinpaku-gold); padding: 26px 24px; border-radius: 4px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .eyebrow { font-family: var(--ks-font-mono); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ks-patina); margin-bottom: 6px; display: block; }
+        .page-header h1 { font-size: clamp(1.7rem, 3.5vw, 2.2rem); font-weight: 600; color: var(--ks-ink); letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; }
+        .page-header p { color: var(--ks-muted); font-size: 0.95rem; max-width: 70ch; }
+        .card { background-color: var(--ks-surface); border: 1px solid var(--ks-rule); border-radius: 4px; padding: 26px 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--ks-rule); flex-wrap: wrap; gap: 8px; }
+        .card-title { font-size: 1.15rem; font-weight: 600; color: var(--ks-ink); }
+        .card-meta { font-family: var(--ks-font-mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--ks-faint); text-transform: uppercase; }
+        .lookup-bar { background-color: var(--ks-surface-subtle); border: 1px solid var(--ks-rule); border-left: 3px solid var(--ks-patina); border-radius: 4px; padding: 16px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .lookup-field { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 6px; }
+        .lookup-field label { font-family: var(--ks-font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ks-patina); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-family: var(--ks-font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ks-muted); }
+        input[type="text"], input[type="number"] {
+            background-color: var(--ks-input-bg); color: var(--ks-ink); border: 1px solid var(--ks-rule); border-radius: 4px; padding: 11px 13px; font-size: 0.95rem; font-family: var(--ks-font-ui); transition: all 0.2s ease; width: 100%;
         }
-        .btn-back {
-            display: inline-flex; align-items: center; gap: 6px;
-            color: var(--primary); text-decoration: none; font-weight: bold;
-            font-size: 0.92rem; padding: 8px 14px; background: white;
-            border-radius: 6px; border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-        .btn-back:hover { background: #f8f9fa; border-color: var(--secondary); }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; padding: 25px 20px; border-radius: 12px; text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
-        }
-        header h1 { font-size: 2.2rem; margin-bottom: 5px; }
-        header p { font-size: 0.95rem; opacity: 0.9; }
-
-        .card {
-            background: var(--card-bg); padding: 25px; border-radius: 10px;
-            border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-        }
-        .card-title { color: var(--primary); font-size: 1.25rem; font-weight: bold; }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label {
-            font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #495057;
-        }
-        .form-group input {
-            padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
-            font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-group input:focus {
-            outline: none; border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(140, 38, 48, 0.12);
-        }
-
-        .actions-bar {
-            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
-        }
-        .btn {
-            padding: 11px 18px; border: none; border-radius: 6px; cursor: pointer;
-            font-weight: bold; font-size: 0.9rem; transition: all 0.2s;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            flex: 1; min-width: 140px;
-        }
-        .btn-cadastrar { background: var(--primary); color: white; }
-        .btn-cadastrar:hover { background: var(--secondary); }
-        .btn-buscar { background: #34495e; color: white; }
-        .btn-buscar:hover { background: #2c3e50; }
-        .btn-atualizar { background: #e67e22; color: white; }
-        .btn-atualizar:hover { background: #d35400; }
-        .btn-excluir { background: var(--danger); color: white; }
-        .btn-excluir:hover { background: #c82333; }
-        .btn-listar { background: #6c757d; color: white; }
-        .btn-listar:hover { background: #5a6268; }
-
-        .result-card {
-            background: #272822; border-radius: 8px; padding: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 20px;
-        }
-        .result-card-header {
-            color: #f8f8f2; font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;
-        }
-        pre {
-            color: #a6e22e; font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 0.88rem; overflow-x: auto; max-height: 280px; margin: 0;
-        }
+        input:focus { outline: none; border-color: var(--ks-rule-focus); box-shadow: 0 0 0 2px oklch(49% 0.08 188 / 0.15); }
+        input::placeholder { color: var(--ks-faint); font-size: 0.85rem; }
+        .actions-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; padding-top: 20px; border-top: 1px solid var(--ks-rule); }
+        .btn { padding: 11px 18px; font-family: var(--ks-font-ui); font-size: 0.875rem; font-weight: 600; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-width: 140px; letter-spacing: 0.02em; }
+        .btn-primary { background-color: var(--ks-kinpaku-gold); color: #fff; border: 1px solid var(--ks-kinpaku-gold); }
+        .btn-primary:hover { background-color: var(--ks-kinpaku-hover); }
+        .btn-secondary { background-color: transparent; color: var(--ks-ink); border: 1px solid var(--ks-rule); }
+        .btn-secondary:hover { background-color: var(--ks-surface-subtle); border-color: var(--ks-rule-strong); }
+        .btn-patina { background-color: var(--ks-patina-light); color: var(--ks-patina); border: 1px solid oklch(49% 0.08 188 / 0.3); }
+        .btn-patina:hover { background-color: oklch(90% 0.04 188); border-color: var(--ks-patina); }
+        .btn-danger { background-color: transparent; color: var(--ks-vermilion); border: 1px solid oklch(52% 0.16 35 / 0.3); }
+        .btn-danger:hover { background-color: oklch(52% 0.16 35 / 0.08); border-color: var(--ks-vermilion); }
+        .terminal-card { background-color: #161819; border: 1px solid #282a2d; border-radius: 4px; overflow: hidden; margin-top: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+        .terminal-header { background-color: #1e2124; border-bottom: 1px solid #282a2d; padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
+        .terminal-dots { display: flex; gap: 6px; }
+        .terminal-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-red { background-color: #ff5f56; } .dot-yellow { background-color: #ffbd2e; } .dot-green { background-color: #27c93f; }
+        .terminal-title { font-family: var(--ks-font-mono); font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a9096; }
+        .terminal-status { font-family: var(--ks-font-mono); font-size: 0.6875rem; color: #63d297; letter-spacing: 0.1em; }
+        pre#resultado { color: #72e0a8; font-family: var(--ks-font-mono); font-size: 0.8125rem; line-height: 1.5; padding: 16px; overflow-x: auto; max-height: 300px; margin: 0; background-color: transparent; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .btn { min-width: 100%; } .page-header, .card { padding: 18px 14px; } }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="top-nav">
-        <a href="bebidas.html" class="btn-back">← Voltar para Bebidas</a>
-        <a href="index.html" class="btn-back">🏠 Menu Principal</a>
+        <a href="bebidas.html" class="nav-link">← Catálogo de Bebidas</a>
+        <a href="index.html" class="nav-link">Painel Central SafeDrink ↗</a>
     </div>
 
-    <header>
-        <h1>🥃 Gestão de Destilados</h1>
-        <p>Controle de tempo de maturação em barril, teores alcoólicos e processos de destilação</p>
+    <header class="page-header">
+        <span class="eyebrow">SAFEDRINK // BEBIDAS DESTILADAS</span>
+        <h1>Gestão de Destilados</h1>
+        <p>Controle de tempo de maturação em barril, teores alcoólicos, tipos e processos de destilação.</p>
     </header>
 
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Formulário de Destilado</span>
-            <small style="color: #666;">* Digite o ID para buscar, atualizar ou excluir</small>
+            <span class="card-title">Dados do Destilado</span>
+            <span class="card-meta">Entidade Destilado // /api/bebidas/destilado</span>
+        </div>
+
+        <div class="lookup-bar">
+            <div class="lookup-field">
+                <label for="id">ID do Destilado (Buscar / Atualizar / Excluir):</label>
+                <input type="number" id="id" placeholder="Ex: 1 (ou deixe vazio para novo cadastro)">
+            </div>
+            <button class="btn btn-patina" type="button" onclick="buscar()">🔍 Buscar por ID</button>
         </div>
 
         <div class="form-grid">
             <div class="form-group">
-                <label for="id">ID do Destilado:</label>
-                <input type="number" id="id" placeholder="Gerado automaticamente">
-            </div>
-
-            <div class="form-group">
                 <label for="nome">Nome do Produto:</label>
                 <input type="text" id="nome" placeholder="Ex: Whisky Single Malt 12 Anos">
             </div>
-
             <div class="form-group">
                 <label for="marca">Marca:</label>
                 <input type="text" id="marca" placeholder="Ex: Highland Crown">
             </div>
-
-            <div class="form-group">
-                <label for="teorAlcoolico">Teor Alcoólico (% vol):</label>
-                <input type="number" step="0.1" id="teorAlcoolico" placeholder="Ex: 40.0">
-            </div>
-
-            <div class="form-group">
-                <label for="volume">Volume (ml):</label>
-                <input type="number" step="0.1" id="volume" placeholder="Ex: 1000">
-            </div>
-
-            <div class="form-group">
-                <label for="paisOrigem">País de Origem:</label>
-                <input type="text" id="paisOrigem" placeholder="Ex: Escócia">
-            </div>
-
             <div class="form-group">
                 <label for="tipoDestilado">Tipo de Destilado:</label>
                 <input type="text" id="tipoDestilado" placeholder="Ex: Whisky, Cachaça, Gin, Vodka">
             </div>
-
+            <div class="form-group">
+                <label for="paisOrigem">País de Origem:</label>
+                <input type="text" id="paisOrigem" placeholder="Ex: Escócia">
+            </div>
+            <div class="form-group">
+                <label for="teorAlcoolico">Teor Alcoólico (% vol):</label>
+                <input type="number" step="0.1" id="teorAlcoolico" placeholder="Ex: 40.0">
+            </div>
+            <div class="form-group">
+                <label for="volume">Volume (ml):</label>
+                <input type="number" step="0.1" id="volume" placeholder="Ex: 1000">
+            </div>
             <div class="form-group">
                 <label for="anosEnvelhecimento">Anos de Envelhecimento:</label>
                 <input type="number" id="anosEnvelhecimento" placeholder="Ex: 12">
@@ -171,16 +120,19 @@
         </div>
 
         <div class="actions-bar">
-            <button class="btn btn-cadastrar" onclick="cadastrar()">➕ Cadastrar Destilado</button>
-            <button class="btn btn-buscar" onclick="buscar()">🔍 Buscar por ID</button>
-            <button class="btn btn-atualizar" onclick="atualizar()">✏️ Atualizar</button>
-            <button class="btn btn-excluir" onclick="excluir()">🗑️ Excluir</button>
-            <button class="btn btn-listar" onclick="listar()">📋 Listar Todos</button>
+            <button class="btn btn-primary" onclick="cadastrar()">➕ Cadastrar Destilado</button>
+            <button class="btn btn-secondary" onclick="atualizar()">✏️ Atualizar</button>
+            <button class="btn btn-secondary" onclick="listar()">📋 Listar Todos</button>
+            <button class="btn btn-danger" onclick="excluir()">🗑️ Excluir</button>
         </div>
 
-        <div class="result-card">
-            <div class="result-card-header">
-                <span>📡 Resposta da API REST (Spring Boot):</span>
+        <div class="terminal-card">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <span class="terminal-dot dot-red"></span><span class="terminal-dot dot-yellow"></span><span class="terminal-dot dot-green"></span>
+                </div>
+                <span class="terminal-title">Console REST — Retorno(status, mensagem, object)</span>
+                <span class="terminal-status">LIVE</span>
             </div>
             <pre id="resultado">Aguardando comando...</pre>
         </div>
@@ -189,112 +141,44 @@
 
 <script>
     function mostrarResultado(dados) {
-        if (dados.status === "Erro") {
-            document.getElementById("resultado").textContent = "Erro: " + dados.mensagemErro;
-            return;
-        }
-
-        document.getElementById("resultado").textContent =
-            JSON.stringify(dados.object, null, 2);
+        if (dados.status === "Erro") { document.getElementById("resultado").textContent = "Erro: " + dados.mensagemErro; return; }
+        document.getElementById("resultado").textContent = JSON.stringify(dados.object, null, 2);
     }
-
     function obterDestilado(comId = false) {
-        let destilado = {
-            nome: document.getElementById("nome").value,
-            marca: document.getElementById("marca").value,
-            teorAlcoolico: Number(document.getElementById("teorAlcoolico").value),
-            volume: Number(document.getElementById("volume").value),
-            paisOrigem: document.getElementById("paisOrigem").value,
-            tipoDestilado: document.getElementById("tipoDestilado").value,
-            anosEnvelhecimento: Number(document.getElementById("anosEnvelhecimento").value)
-        };
-
-        if (comId) {
-            destilado.id = Number(document.getElementById("id").value);
-        }
-
+        let destilado = { nome: document.getElementById("nome").value, marca: document.getElementById("marca").value, teorAlcoolico: Number(document.getElementById("teorAlcoolico").value), volume: Number(document.getElementById("volume").value), paisOrigem: document.getElementById("paisOrigem").value, tipoDestilado: document.getElementById("tipoDestilado").value, anosEnvelhecimento: Number(document.getElementById("anosEnvelhecimento").value) };
+        if (comId) destilado.id = Number(document.getElementById("id").value);
         return destilado;
     }
-
     function cadastrar() {
-        let bebida = obterDestilado(false);
-
-        fetch("/api/bebidas/destilado", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(bebida)
-        })
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetch("/api/bebidas/destilado", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterDestilado(false)) })
+        .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function buscar() {
         let id = document.getElementById("id").value;
-        if (!id) {
-            alert("Informe o ID para buscar!");
-            return;
-        }
-
-        fetch("/api/bebidas/destilado/" + id)
-        .then(resposta => resposta.json())
-        .then(dados => {
-            if (dados.status === "Erro") {
-                mostrarResultado(dados);
-                return;
-            }
-
+        if (!id) { alert("Informe o ID para buscar!"); return; }
+        fetch("/api/bebidas/destilado/" + id).then(r => r.json()).then(dados => {
+            if (dados.status === "Erro") { mostrarResultado(dados); return; }
             let bebida = dados.object;
-            document.getElementById("nome").value = bebida.nome || "";
-            document.getElementById("marca").value = bebida.marca || "";
-            document.getElementById("teorAlcoolico").value = bebida.teorAlcoolico ?? "";
-            document.getElementById("volume").value = bebida.volume ?? "";
-            document.getElementById("paisOrigem").value = bebida.paisOrigem || "";
-            document.getElementById("tipoDestilado").value = bebida.tipoDestilado || "";
+            document.getElementById("nome").value = bebida.nome || ""; document.getElementById("marca").value = bebida.marca || "";
+            document.getElementById("teorAlcoolico").value = bebida.teorAlcoolico ?? ""; document.getElementById("volume").value = bebida.volume ?? "";
+            document.getElementById("paisOrigem").value = bebida.paisOrigem || ""; document.getElementById("tipoDestilado").value = bebida.tipoDestilado || "";
             document.getElementById("anosEnvelhecimento").value = bebida.anosEnvelhecimento ?? "";
-
             mostrarResultado(dados);
-        })
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        }).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function atualizar() {
         let id = document.getElementById("id").value;
-        if (!id) {
-            alert("Informe o ID para atualizar!");
-            return;
-        }
-
-        let bebida = obterDestilado(true);
-
-        fetch("/api/bebidas/destilado/" + id, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(bebida)
-        })
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        if (!id) { alert("Informe o ID para atualizar!"); return; }
+        fetch("/api/bebidas/destilado/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterDestilado(true)) })
+        .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function excluir() {
         let id = document.getElementById("id").value;
-        if (!id) {
-            alert("Informe o ID para excluir!");
-            return;
-        }
-
-        fetch("/api/bebidas/destilado/" + id, { method: "DELETE" })
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        if (!id) { alert("Informe o ID para excluir!"); return; }
+        fetch("/api/bebidas/destilado/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function listar() {
-        fetch("/api/bebidas/destilado")
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetch("/api/bebidas/destilado").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
 </script>
 </body>

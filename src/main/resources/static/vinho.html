@@ -3,181 +3,464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeDrink - Gestão de Vinhos</title>
+    <title>SafeDrink — Gestão de Vinhos (Impeccable Light)</title>
     <style>
         :root {
-            --primary: #5c1d24;
-            --secondary: #8c2630;
-            --accent: #d99b26;
-            --bg: #f4f6f9;
-            --card-bg: #ffffff;
-            --text: #2c3e50;
-            --border: #e2e8f0;
-            --success: #28a745;
-            --danger: #dc3545;
-            --info: #17a2b8;
+            /* Brand Anchors */
+            --ks-kinpaku-gold: oklch(76% 0.14 82);
+            --ks-kinpaku-hover: oklch(71% 0.15 82);
+            --ks-kinpaku-text: oklch(20% 0.02 95);
+            --ks-patina: oklch(49% 0.08 188);
+            --ks-patina-light: oklch(93% 0.03 188);
+
+            /* Surfaces (Impeccable Light Paper System) */
+            --ks-bg: oklch(97% 0.008 95);
+            --ks-surface: #ffffff;
+            --ks-surface-subtle: oklch(95% 0.008 95);
+            --ks-input-bg: #ffffff;
+
+            /* Borders & Hairlines */
+            --ks-rule: oklch(25% 0.02 95 / 0.12);
+            --ks-rule-strong: oklch(76% 0.14 82 / 0.6);
+            --ks-rule-focus: oklch(49% 0.08 188 / 0.8);
+
+            /* Text Ramp */
+            --ks-ink: oklch(18% 0.02 95);
+            --ks-text: oklch(25% 0.018 95);
+            --ks-muted: oklch(45% 0.015 95);
+            --ks-faint: oklch(58% 0.012 95);
+
+            /* State */
+            --ks-vermilion: oklch(52% 0.16 35);
+            --ks-success: oklch(45% 0.14 145);
+
+            /* Fonts */
+            --ks-font-ui: "Albert Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --ks-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--ks-font-ui);
+        }
 
-        .container { max-width: 950px; margin: 0 auto; }
+        body {
+            background-color: var(--ks-bg);
+            color: var(--ks-text);
+            min-height: 100vh;
+            padding: 24px 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
 
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        /* Top Navigation */
         .top-nav {
-            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--ks-rule);
         }
-        .btn-back {
-            display: inline-flex; align-items: center; gap: 6px;
-            color: var(--primary); text-decoration: none; font-weight: bold;
-            font-size: 0.92rem; padding: 8px 14px; background: white;
-            border-radius: 6px; border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-        .btn-back:hover { background: #f8f9fa; border-color: var(--secondary); }
 
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; padding: 25px 20px; border-radius: 12px; text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
+        .nav-link {
+            font-family: var(--ks-font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s ease;
         }
-        header h1 { font-size: 2.2rem; margin-bottom: 5px; }
-        header p { font-size: 0.95rem; opacity: 0.9; }
 
+        .nav-link:hover {
+            color: var(--ks-patina);
+        }
+
+        /* Page Header */
+        .page-header {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-top: 3px solid var(--ks-kinpaku-gold);
+            padding: 26px 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .eyebrow {
+            font-family: var(--ks-font-mono);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ks-patina);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .page-header h1 {
+            font-size: clamp(1.7rem, 3.5vw, 2.2rem);
+            font-weight: 600;
+            color: var(--ks-ink);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: var(--ks-muted);
+            font-size: 0.95rem;
+            max-width: 70ch;
+        }
+
+        /* Card Section */
         .card {
-            background: var(--card-bg); padding: 25px; border-radius: 10px;
-            border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-radius: 4px;
+            padding: 26px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-        }
-        .card-title { color: var(--primary); font-size: 1.25rem; font-weight: bold; }
 
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--ks-rule);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--ks-ink);
+        }
+
+        .card-meta {
+            font-family: var(--ks-font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--ks-faint);
+            text-transform: uppercase;
+        }
+
+        /* Search / EAN Box */
+        .search-helper {
+            background-color: var(--ks-surface-subtle);
+            border: 1px solid var(--ks-rule);
+            border-left: 3px solid var(--ks-patina);
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 22px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .search-helper-field {
+            flex: 1;
+            min-width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .search-helper-field label {
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ks-patina);
+        }
+
+        /* Form Grid */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
-        .form-group { display: flex; flex-direction: column; }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
         .form-group label {
-            font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #495057;
-        }
-        .form-group input {
-            padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
-            font-size: 0.95rem; transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-group input:focus {
-            outline: none; border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(140, 38, 48, 0.12);
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
         }
 
+        input[type="text"],
+        input[type="number"] {
+            background-color: var(--ks-input-bg);
+            color: var(--ks-ink);
+            border: 1px solid var(--ks-rule);
+            border-radius: 4px;
+            padding: 11px 13px;
+            font-size: 0.95rem;
+            font-family: var(--ks-font-ui);
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--ks-rule-focus);
+            box-shadow: 0 0 0 2px oklch(49% 0.08 188 / 0.15);
+        }
+
+        input::placeholder {
+            color: var(--ks-faint);
+            font-size: 0.85rem;
+        }
+
+        /* Actions Bar */
         .actions-bar {
-            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;
-        }
-        .btn {
-            padding: 11px 18px; border: none; border-radius: 6px; cursor: pointer;
-            font-weight: bold; font-size: 0.9rem; transition: all 0.2s;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            flex: 1; min-width: 140px;
-        }
-        .btn-cadastrar { background: var(--primary); color: white; }
-        .btn-cadastrar:hover { background: var(--secondary); }
-        .btn-buscar { background: #34495e; color: white; }
-        .btn-buscar:hover { background: #2c3e50; }
-        .btn-atualizar { background: #e67e22; color: white; }
-        .btn-atualizar:hover { background: #d35400; }
-        .btn-excluir { background: var(--danger); color: white; }
-        .btn-excluir:hover { background: #c82333; }
-        .btn-listar { background: #6c757d; color: white; }
-        .btn-listar:hover { background: #5a6268; }
-
-        .search-helper {
-            background: #f8f9fa; border: 1px dashed var(--border); border-radius: 8px;
-            padding: 15px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-end;
+            display: flex;
             flex-wrap: wrap;
-        }
-        .search-helper .form-group { flex: 1; min-width: 220px; margin-bottom: 0; }
-        .search-helper button {
-            padding: 10px 18px; background: var(--accent); color: #fff;
-            border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 18px;
+            border-top: 1px solid var(--ks-rule);
         }
 
-        .result-card {
-            background: #272822; border-radius: 8px; padding: 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 20px;
+        .btn {
+            padding: 11px 18px;
+            font-family: var(--ks-font-ui);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 135px;
+            letter-spacing: 0.02em;
         }
-        .result-card-header {
-            color: #f8f8f2; font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;
-            display: flex; justify-content: space-between; align-items: center;
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--ks-kinpaku-gold);
+            color: #ffffff;
+            border: 1px solid var(--ks-kinpaku-gold);
         }
-        pre {
-            color: #a6e22e; font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 0.88rem; overflow-x: auto; max-height: 280px; margin: 0;
+
+        .btn-primary:hover {
+            background-color: var(--ks-kinpaku-hover);
+            border-color: var(--ks-kinpaku-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--ks-ink);
+            border: 1px solid var(--ks-rule);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--ks-surface-subtle);
+            border-color: var(--ks-rule-strong);
+        }
+
+        .btn-patina {
+            background-color: var(--ks-patina-light);
+            color: var(--ks-patina);
+            border: 1px solid oklch(49% 0.08 188 / 0.3);
+        }
+
+        .btn-patina:hover {
+            background-color: oklch(90% 0.04 188);
+            border-color: var(--ks-patina);
+        }
+
+        .btn-danger {
+            background-color: transparent;
+            color: var(--ks-vermilion);
+            border: 1px solid oklch(52% 0.16 35 / 0.3);
+        }
+
+        .btn-danger:hover {
+            background-color: oklch(52% 0.16 35 / 0.08);
+            border-color: var(--ks-vermilion);
+        }
+
+        /* Faux Terminal */
+        .terminal-card {
+            background-color: #161819;
+            border: 1px solid #282a2d;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 24px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        .terminal-header {
+            background-color: #1e2124;
+            border-bottom: 1px solid #282a2d;
+            padding: 9px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .terminal-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+
+        .terminal-title {
+            font-family: var(--ks-font-mono);
+            font-size: 0.6875rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #8a9096;
+        }
+
+        .terminal-status {
+            font-family: var(--ks-font-mono);
+            font-size: 0.6875rem;
+            color: #63d297;
+            letter-spacing: 0.1em;
+        }
+
+        pre#resultado {
+            color: #72e0a8;
+            font-family: var(--ks-font-mono);
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            padding: 16px;
+            overflow-x: auto;
+            max-height: 300px;
+            margin: 0;
+            background-color: transparent;
+        }
+
+        pre#resultado::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        pre#resultado::-webkit-scrollbar-track {
+            background: #161819;
+        }
+        pre#resultado::-webkit-scrollbar-thumb {
+            background: #2f3438;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn {
+                min-width: 100%;
+            }
+            .page-header, .card {
+                padding: 18px 14px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- Breadcrumb & Top Navigation -->
     <div class="top-nav">
-        <a href="bebidas.html" class="btn-back">← Voltar para Bebidas</a>
-        <a href="index.html" class="btn-back">🏠 Menu Principal</a>
+        <a href="bebidas.html" class="nav-link">
+            ← Catálogo de Bebidas
+        </a>
+        <a href="index.html" class="nav-link">
+            Painel Central SafeDrink ↗
+        </a>
     </div>
 
-    <header>
-        <h1>🍷 Gestão de Vinhos</h1>
-        <p>Cadastre, pesquise e gerencie informações de safras, castas e origens vinícolas</p>
+    <!-- Page Header (Impeccable Light) -->
+    <header class="page-header">
+        <span class="eyebrow">Módulo de Cadastro · Origem Vinícola</span>
+        <h1>Gestão e Rastreio de Vinhos</h1>
+        <p>Registro de safras, composição varietal, identificação de Denominação de Origem e sincronização com banco aberto EAN.</p>
     </header>
 
+    <!-- Main Card -->
     <div class="card">
         <div class="card-header">
-            <span class="card-title">Formulário de Vinho</span>
-            <small style="color: #666;">* Digite o ID para buscar, atualizar ou excluir</small>
+            <span class="card-title">Parâmetros do Rótulo</span>
+            <span class="card-meta">Entidade REST: /api/bebidas/vinho</span>
         </div>
 
-        <!-- Consulta Rápida EAN -->
+        <!-- Consulta EAN Helper -->
         <div class="search-helper">
-            <div class="form-group">
-                <label for="ean">Preenchimento Automático via Código de Barras (EAN):</label>
+            <div class="search-helper-field">
+                <label for="ean">Código de Barras (EAN / GS1):</label>
                 <input type="text" id="ean" placeholder="Ex: 7891910000197">
             </div>
-            <button type="button" onclick="consultarEan()">🔍 Buscar na Base Aberta</button>
+            <button type="button" class="btn btn-patina" style="flex: 0 0 auto;" onclick="consultarEan()">
+                🔍 Consultar EAN
+            </button>
         </div>
 
+        <!-- Form Grid -->
         <div class="form-grid">
             <div class="form-group">
-                <label for="id">ID do Vinho:</label>
-                <input type="number" id="id" placeholder="Gerado automaticamente">
+                <label for="id">ID do Vinho (Registro):</label>
+                <input type="number" id="id" placeholder="Automático (ou informe para busca)">
             </div>
 
             <div class="form-group">
-                <label for="nome">Nome do Rótulo:</label>
+                <label for="nome">Nome Comercial:</label>
                 <input type="text" id="nome" placeholder="Ex: Cabernet Sauvignon Reserva">
             </div>
 
             <div class="form-group">
-                <label for="marca">Marca / Vinícola:</label>
-                <input type="text" id="marca" placeholder="Ex: Vale Imperial">
+                <label for="marca">Vinícola / Marca:</label>
+                <input type="text" id="marca" placeholder="Ex: Vale dos Vinhedos">
             </div>
 
             <div class="form-group">
-                <label for="teorAlcoolico">Teor Alcoólico (% vol):</label>
+                <label for="teorAlcoolico">Graduação Alcoólica (% vol):</label>
                 <input type="number" step="0.1" id="teorAlcoolico" placeholder="Ex: 13.5">
             </div>
 
             <div class="form-group">
-                <label for="volume">Volume (ml):</label>
+                <label for="volume">Volume da Garrafa (ml):</label>
                 <input type="number" step="0.1" id="volume" placeholder="Ex: 750">
             </div>
 
             <div class="form-group">
-                <label for="paisOrigem">País de Origem:</label>
+                <label for="paisOrigem">País de Produção:</label>
                 <input type="text" id="paisOrigem" placeholder="Ex: Brasil">
             </div>
 
@@ -192,24 +475,32 @@
             </div>
 
             <div class="form-group">
-                <label for="regiao">Região Vinícola:</label>
+                <label for="regiao">Região Geográfica / Terroir:</label>
                 <input type="text" id="regiao" placeholder="Ex: Serra Gaúcha">
             </div>
         </div>
 
+        <!-- Actions Row -->
         <div class="actions-bar">
-            <button class="btn btn-cadastrar" onclick="cadastrar()">➕ Cadastrar Vinho</button>
-            <button class="btn btn-buscar" onclick="buscar()">🔍 Buscar por ID</button>
-            <button class="btn btn-atualizar" onclick="atualizar()">✏️ Atualizar</button>
-            <button class="btn btn-excluir" onclick="excluir()">🗑️ Excluir</button>
-            <button class="btn btn-listar" onclick="listar()">📋 Listar Todos</button>
+            <button class="btn btn-primary" onclick="cadastrar()">Cadastrar Vinho</button>
+            <button class="btn btn-secondary" onclick="buscar()">Buscar por ID</button>
+            <button class="btn btn-secondary" onclick="atualizar()">Atualizar</button>
+            <button class="btn btn-danger" onclick="excluir()">Excluir</button>
+            <button class="btn btn-patina" onclick="listar()">Listar Todos</button>
         </div>
 
-        <div class="result-card">
-            <div class="result-card-header">
-                <span>📡 Resposta da API REST (Spring Boot):</span>
+        <!-- Faux Terminal Engine Output -->
+        <div class="terminal-card">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <span class="terminal-dot dot-red"></span>
+                    <span class="terminal-dot dot-yellow"></span>
+                    <span class="terminal-dot dot-green"></span>
+                </div>
+                <span class="terminal-title">SafeDrink Engine · Retorno API</span>
+                <span class="terminal-status">LIVE LINK</span>
             </div>
-            <pre id="resultado">Aguardando comando...</pre>
+            <pre id="resultado">Aguardando comando ou consulta REST...</pre>
         </div>
     </div>
 </div>
@@ -233,6 +524,7 @@
                     if (produto.nutriments && produto.nutriments.alcohol) {
                         document.getElementById("teorAlcoolico").value = produto.nutriments.alcohol;
                     }
+
                     alert("Dados carregados com sucesso do Open Food Facts!");
                 } else {
                     alert("Produto não encontrado na base do Open Food Facts.");
@@ -246,7 +538,7 @@
 
     function mostrarResultado(dados) {
         if (dados.status === "Erro") {
-            document.getElementById("resultado").textContent = "Erro: " + dados.mensagemErro;
+            document.getElementById("resultado").textContent = dados.mensagemErro;
             return;
         }
 
@@ -255,7 +547,7 @@
     }
 
     function obterVinhoDoFormulario(comId = false) {
-        let vinho = {
+        let bebida = {
             nome: document.getElementById("nome").value,
             marca: document.getElementById("marca").value,
             teorAlcoolico: Number(document.getElementById("teorAlcoolico").value),
@@ -267,10 +559,10 @@
         };
 
         if (comId) {
-            vinho.id = Number(document.getElementById("id").value);
+            bebida.id = Number(document.getElementById("id").value);
         }
 
-        return vinho;
+        return bebida;
     }
 
     function cadastrar() {
@@ -278,20 +570,17 @@
 
         fetch("/api/bebidas/vinho", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(bebida)
         })
         .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        .then(dados => mostrarResultado(dados));
     }
 
     function buscar() {
         let id = document.getElementById("id").value;
-        if (!id) {
-            alert("Informe o ID para buscar!");
-            return;
-        }
 
         fetch("/api/bebidas/vinho/" + id)
         .then(resposta => resposta.json())
@@ -302,6 +591,7 @@
             }
 
             let bebida = dados.object;
+
             document.getElementById("nome").value = bebida.nome || "";
             document.getElementById("marca").value = bebida.marca || "";
             document.getElementById("teorAlcoolico").value = bebida.teorAlcoolico ?? "";
@@ -312,47 +602,38 @@
             document.getElementById("regiao").value = bebida.regiao || "";
 
             mostrarResultado(dados);
-        })
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        });
     }
 
     function atualizar() {
         let id = document.getElementById("id").value;
-        if (!id) {
-            alert("Informe o ID para atualizar!");
-            return;
-        }
-
         let bebida = obterVinhoDoFormulario(true);
 
         fetch("/api/bebidas/vinho/" + id, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(bebida)
         })
         .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        .then(dados => mostrarResultado(dados));
     }
 
     function excluir() {
         let id = document.getElementById("id").value;
-        if (!id) {
-            alert("Informe o ID para excluir!");
-            return;
-        }
 
-        fetch("/api/bebidas/vinho/" + id, { method: "DELETE" })
+        fetch("/api/bebidas/vinho/" + id, {
+            method: "DELETE"
+        })
         .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        .then(dados => mostrarResultado(dados));
     }
 
     function listar() {
         fetch("/api/bebidas/vinho")
         .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados))
-        .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        .then(dados => mostrarResultado(dados));
     }
 </script>
 </body>

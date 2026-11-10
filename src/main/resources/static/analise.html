@@ -1,188 +1,210 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro de Análises</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeDrink — Laudos & Análises Periciais (Impeccable Light)</title>
     <style>
-        button {
-            width: 300px;
-            padding: 10px;
-            margin: 5px;
+        :root {
+            --ks-kinpaku-gold: oklch(76% 0.14 82); --ks-kinpaku-hover: oklch(71% 0.15 82);
+            --ks-patina: oklch(49% 0.08 188); --ks-patina-light: oklch(93% 0.03 188);
+            --ks-bg: oklch(97% 0.008 95); --ks-surface: #ffffff; --ks-surface-subtle: oklch(95% 0.008 95); --ks-input-bg: #ffffff;
+            --ks-rule: oklch(25% 0.02 95 / 0.12); --ks-rule-strong: oklch(76% 0.14 82 / 0.6); --ks-rule-focus: oklch(49% 0.08 188 / 0.8);
+            --ks-ink: oklch(18% 0.02 95); --ks-text: oklch(25% 0.018 95); --ks-muted: oklch(45% 0.015 95); --ks-faint: oklch(58% 0.012 95);
+            --ks-vermilion: oklch(52% 0.16 35);
+            --ks-font-ui: "Albert Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --ks-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--ks-font-ui); }
+        body { background-color: var(--ks-bg); color: var(--ks-text); min-height: 100vh; padding: 24px 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 960px; margin: 0 auto; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--ks-rule); }
+        .nav-link { font-family: var(--ks-font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ks-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-link:hover { color: var(--ks-patina); }
+        .page-header { background-color: var(--ks-surface); border: 1px solid var(--ks-rule); border-top: 3px solid var(--ks-kinpaku-gold); padding: 26px 24px; border-radius: 4px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .eyebrow { font-family: var(--ks-font-mono); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ks-patina); margin-bottom: 6px; display: block; }
+        .page-header h1 { font-size: clamp(1.7rem, 3.5vw, 2.2rem); font-weight: 600; color: var(--ks-ink); letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; }
+        .page-header p { color: var(--ks-muted); font-size: 0.95rem; max-width: 70ch; }
+        .card { background-color: var(--ks-surface); border: 1px solid var(--ks-rule); border-radius: 4px; padding: 26px 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--ks-rule); flex-wrap: wrap; gap: 8px; }
+        .card-title { font-size: 1.15rem; font-weight: 600; color: var(--ks-ink); }
+        .card-meta { font-family: var(--ks-font-mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--ks-faint); text-transform: uppercase; }
+        .lookup-bar { background-color: var(--ks-surface-subtle); border: 1px solid var(--ks-rule); border-left: 3px solid var(--ks-patina); border-radius: 4px; padding: 16px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .lookup-field { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 6px; }
+        .lookup-field label { font-family: var(--ks-font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ks-patina); }
+        .form-section-title { font-family: var(--ks-font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ks-muted); margin: 20px 0 12px 0; display: flex; align-items: center; gap: 8px; }
+        .form-section-title::after { content: ""; flex: 1; height: 1px; background-color: var(--ks-rule); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-family: var(--ks-font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ks-muted); }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
+            background-color: var(--ks-input-bg); color: var(--ks-ink); border: 1px solid var(--ks-rule); border-radius: 4px; padding: 11px 13px; font-size: 0.95rem; font-family: var(--ks-font-ui); transition: all 0.2s ease; width: 100%;
+        }
+        textarea { resize: vertical; min-height: 90px; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ks-rule-focus); box-shadow: 0 0 0 2px oklch(49% 0.08 188 / 0.15); }
+        input::placeholder, textarea::placeholder { color: var(--ks-faint); font-size: 0.85rem; }
+        .actions-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; padding-top: 20px; border-top: 1px solid var(--ks-rule); }
+        .btn { padding: 11px 18px; font-family: var(--ks-font-ui); font-size: 0.875rem; font-weight: 600; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex: 1; min-width: 140px; letter-spacing: 0.02em; }
+        .btn-primary { background-color: var(--ks-kinpaku-gold); color: #fff; border: 1px solid var(--ks-kinpaku-gold); }
+        .btn-primary:hover { background-color: var(--ks-kinpaku-hover); }
+        .btn-secondary { background-color: transparent; color: var(--ks-ink); border: 1px solid var(--ks-rule); }
+        .btn-secondary:hover { background-color: var(--ks-surface-subtle); border-color: var(--ks-rule-strong); }
+        .btn-patina { background-color: var(--ks-patina-light); color: var(--ks-patina); border: 1px solid oklch(49% 0.08 188 / 0.3); }
+        .btn-patina:hover { background-color: oklch(90% 0.04 188); border-color: var(--ks-patina); }
+        .btn-danger { background-color: transparent; color: var(--ks-vermilion); border: 1px solid oklch(52% 0.16 35 / 0.3); }
+        .btn-danger:hover { background-color: oklch(52% 0.16 35 / 0.08); border-color: var(--ks-vermilion); }
+        .terminal-card { background-color: #161819; border: 1px solid #282a2d; border-radius: 4px; overflow: hidden; margin-top: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+        .terminal-header { background-color: #1e2124; border-bottom: 1px solid #282a2d; padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
+        .terminal-dots { display: flex; gap: 6px; }
+        .terminal-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-red { background-color: #ff5f56; } .dot-yellow { background-color: #ffbd2e; } .dot-green { background-color: #27c93f; }
+        .terminal-title { font-family: var(--ks-font-mono); font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase; color: #8a9096; }
+        .terminal-status { font-family: var(--ks-font-mono); font-size: 0.6875rem; color: #63d297; letter-spacing: 0.1em; }
+        pre#resultado { color: #72e0a8; font-family: var(--ks-font-mono); font-size: 0.8125rem; line-height: 1.5; padding: 16px; overflow-x: auto; max-height: 300px; margin: 0; background-color: transparent; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .btn { min-width: 100%; } .page-header, .card { padding: 18px 14px; } }
     </style>
 </head>
-
 <body>
+<div class="container">
+    <div class="top-nav">
+        <a href="index.html" class="nav-link">← Painel Central SafeDrink</a>
+        <a href="denuncias.html" class="nav-link">Canal de Denúncias ↗</a>
+    </div>
 
-    <h1>SafeDrink</h1>
-    <h2>CADASTRO DE ANÁLISES</h2>
+    <header class="page-header">
+        <span class="eyebrow">SAFEDRINK // PERÍCIA & LABORATÓRIO</span>
+        <h1>Laudos & Análises Periciais</h1>
+        <p>Aferição toxicológica e laboratorial de amostras recolhidas pela fiscalização sanitária.</p>
+    </header>
 
-    ID:
-    <input type="text" id="id">
-    <br><br>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Resultado de Análise Laboratorial</span>
+            <span class="card-meta">Entidade Análise // /api/bebidas/analise</span>
+        </div>
 
-    Data:
-    <input type="text" id="data">
-    <br><br>
+        <div class="lookup-bar">
+            <div class="lookup-field">
+                <label for="id">ID da Análise (Buscar / Atualizar / Excluir):</label>
+                <input type="number" id="id" placeholder="Ex: 1 (ou deixe vazio para novo registro)">
+            </div>
+            <button class="btn btn-patina" type="button" onclick="buscar()">🔍 Buscar por ID</button>
+        </div>
 
-    Resultado:
-    <input type="text" id="resultadoAnalise">
-    <br><br>
+        <div class="form-section-title">01. Metadados do Ensaio</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="data">Data da Conclusão do Laudo:</label>
+                <input type="date" id="data">
+            </div>
+            <div class="form-group">
+                <label for="resultadoAnalise">Resultado do Ensaio:</label>
+                <select id="resultadoAnalise">
+                    <option value="CONFORME">✅ Conforme / Autêntica</option>
+                    <option value="ADULTERADA">🚨 Adulterada / Falsificada</option>
+                    <option value="INCONCLUSIVA">⚠️ Inconclusiva (Requer contraprova)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="laboratorio">Laboratório Responsável:</label>
+                <input type="text" id="laboratorio" placeholder="Ex: LACAT - Toxicológico">
+            </div>
+        </div>
 
-    Laudo:
-    <input type="text" id="laudo">
-    <br><br>
+        <div class="form-section-title">02. Vínculos com Denúncia e Fiscal</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="fiscalId">ID do Fiscal Responsável:</label>
+                <input type="number" id="fiscalId" placeholder="Ex: 1">
+            </div>
+            <div class="form-group">
+                <label for="denunciaId">ID da Denúncia Vinculada:</label>
+                <input type="number" id="denunciaId" placeholder="Ex: 1">
+            </div>
+        </div>
 
-    Laboratório:
-    <input type="text" id="laboratorio">
-    <br><br>
+        <div class="form-section-title">03. Parecer Técnico</div>
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="laudo">Parecer Técnico / Detalhamento do Laudo:</label>
+                <textarea id="laudo" placeholder="Ex: Presença de metanol acima do limite legal, coloração obtida por anilina sintética proibida"></textarea>
+            </div>
+        </div>
 
-    ID do Fiscal:
-    <input type="text" id="fiscalId">
-    <br><br>
+        <div class="actions-bar">
+            <button class="btn btn-primary" onclick="cadastrar()">➕ Registrar Análise</button>
+            <button class="btn btn-secondary" onclick="atualizar()">✏️ Atualizar</button>
+            <button class="btn btn-secondary" onclick="listar()">📋 Listar Todas</button>
+            <button class="btn btn-danger" onclick="excluir()">🗑️ Excluir</button>
+        </div>
 
-    ID da Denúncia:
-    <input type="text" id="denunciaId">
-    <br><br>
+        <div class="terminal-card">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <span class="terminal-dot dot-red"></span>
+                    <span class="terminal-dot dot-yellow"></span>
+                    <span class="terminal-dot dot-green"></span>
+                </div>
+                <span class="terminal-title">Console REST — Retorno(status, mensagem, object)</span>
+                <span class="terminal-status">LIVE</span>
+            </div>
+            <pre id="resultado">Aguardando comando...</pre>
+        </div>
+    </div>
+</div>
 
-    <button onclick="cadastrar()">CADASTRAR ANÁLISE</button>
-    <button onclick="buscar()">BUSCAR ANÁLISE</button>
-
-    <br><br>
-
-    <button onclick="atualizar()">ATUALIZAR ANÁLISE</button>
-    <button onclick="excluir()">EXCLUIR ANÁLISE</button>
-
-    <br><br>
-
-    <button onclick="listar()">LISTAR ANÁLISES</button>
-
-    <br><br>
-
-    <a href="index.html">
-        <button>VOLTAR</button>
-    </a>
-
-    <pre id="resultado"></pre>
-
-    <script>
-
+<script>
     function mostrarResultado(dados) {
-        if (dados.status === "Erro") {
-            document.getElementById("resultado").textContent = dados.mensagemErro;
-            return;
-        }
-
-        document.getElementById("resultado").textContent =
-            JSON.stringify(dados.object, null, 2);
+        if (dados.status === "Erro") { document.getElementById("resultado").textContent = "Erro: " + dados.mensagemErro; return; }
+        document.getElementById("resultado").textContent = JSON.stringify(dados.object, null, 2);
     }
-
-    function criarObjetoId(id) {
-        if (!id || id.trim() === "") {
-            return null;
-        }
-        return { id: Number(id) };
-    }
-
+    function criarObjetoId(id) { if (!id || id.toString().trim() === "") return null; return { id: Number(id) }; }
     function obterAnalise(comId = false) {
         let fiscalVal = document.getElementById("fiscalId").value.trim();
         let denunciaVal = document.getElementById("denunciaId").value.trim();
-
         let analise = {
-            data: document.getElementById("data").value,
-            resultado: document.getElementById("resultadoAnalise").value,
-            laudo: document.getElementById("laudo").value,
-            laboratorio: document.getElementById("laboratorio").value,
-            fiscal: criarObjetoId(fiscalVal),
-            fiscalId: fiscalVal !== "" ? Number(fiscalVal) : null,
-            denuncia: criarObjetoId(denunciaVal),
-            denunciaId: denunciaVal !== "" ? Number(denunciaVal) : null
+            data: document.getElementById("data").value, resultado: document.getElementById("resultadoAnalise").value,
+            laudo: document.getElementById("laudo").value, laboratorio: document.getElementById("laboratorio").value,
+            fiscal: criarObjetoId(fiscalVal), fiscalId: fiscalVal !== "" ? Number(fiscalVal) : null,
+            denuncia: criarObjetoId(denunciaVal), denunciaId: denunciaVal !== "" ? Number(denunciaVal) : null
         };
-
-        if (comId) {
-            analise.id = Number(document.getElementById("id").value);
-        }
-
+        if (comId) analise.id = Number(document.getElementById("id").value);
         return analise;
     }
-
     function cadastrar() {
-
-        let analise = obterAnalise(false);
-
-        fetch("/api/bebidas/analise", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(analise)
-        })
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados));
+        fetch("/api/bebidas/analise", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterAnalise(false)) })
+        .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function buscar() {
-
         let id = document.getElementById("id").value;
-
-        fetch("/api/bebidas/analise/" + id)
-        .then(resposta => resposta.json())
-        .then(dados => {
-
-            if (dados.status === "Erro") {
-                mostrarResultado(dados);
-                return;
-            }
-
+        if (!id) { alert("Informe o ID para buscar!"); return; }
+        fetch("/api/bebidas/analise/" + id).then(r => r.json()).then(dados => {
+            if (dados.status === "Erro") { mostrarResultado(dados); return; }
             let analise = dados.object;
-
             document.getElementById("data").value = analise.data || "";
-            document.getElementById("resultadoAnalise").value = analise.resultado || "";
+            document.getElementById("resultadoAnalise").value = analise.resultado || "CONFORME";
             document.getElementById("laudo").value = analise.laudo || "";
             document.getElementById("laboratorio").value = analise.laboratorio || "";
             document.getElementById("fiscalId").value = analise.fiscal ? analise.fiscal.id : (analise.fiscalId || "");
             document.getElementById("denunciaId").value = analise.denuncia ? analise.denuncia.id : (analise.denunciaId || "");
-
             mostrarResultado(dados);
-        });
+        }).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function atualizar() {
-
         let id = document.getElementById("id").value;
-        let analise = obterAnalise(true);
-
-        fetch("/api/bebidas/analise/" + id, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(analise)
-        })
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados));
+        if (!id) { alert("Informe o ID para atualizar!"); return; }
+        fetch("/api/bebidas/analise/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterAnalise(true)) })
+        .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function excluir() {
-
         let id = document.getElementById("id").value;
-
-        fetch("/api/bebidas/analise/" + id, {
-            method: "DELETE"
-        })
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados));
+        if (!id) { alert("Informe o ID para excluir!"); return; }
+        fetch("/api/bebidas/analise/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
     function listar() {
-
-        fetch("/api/bebidas/analise")
-        .then(resposta => resposta.json())
-        .then(dados => mostrarResultado(dados));
+        fetch("/api/bebidas/analise").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
-
-    </script>
+</script>
 </body>
 </html>

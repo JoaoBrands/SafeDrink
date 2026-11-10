@@ -3,157 +3,348 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeDrink - Validação de Autenticidade do Selo Digital</title>
+    <title>SafeDrink — Validação de Autenticidade do Selo Digital (Impeccable Light)</title>
     <style>
         :root {
-            --primary: #5c1d24;
-            --secondary: #8c2630;
-            --success: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --bg: #f4f6f9;
-            --card-bg: #ffffff;
-            --text: #2c3e50;
-            --border: #dee2e6;
+            /* Brand Anchors */
+            --ks-kinpaku-gold: oklch(76% 0.14 82);
+            --ks-kinpaku-hover: oklch(71% 0.15 82);
+            --ks-patina: oklch(49% 0.08 188);
+            --ks-patina-light: oklch(93% 0.03 188);
+
+            /* Surfaces */
+            --ks-bg: oklch(97% 0.008 95);
+            --ks-surface: #ffffff;
+            --ks-surface-subtle: oklch(95% 0.008 95);
+            --ks-input-bg: #ffffff;
+
+            /* Borders & Hairlines */
+            --ks-rule: oklch(25% 0.02 95 / 0.12);
+            --ks-rule-strong: oklch(76% 0.14 82 / 0.6);
+            --ks-rule-focus: oklch(49% 0.08 188 / 0.8);
+
+            /* Text Ramp */
+            --ks-ink: oklch(18% 0.02 95);
+            --ks-text: oklch(25% 0.018 95);
+            --ks-muted: oklch(45% 0.015 95);
+            --ks-faint: oklch(58% 0.012 95);
+
+            /* State */
+            --ks-vermilion: oklch(52% 0.16 35);
+            --ks-success: oklch(45% 0.14 145);
+
+            /* Fonts */
+            --ks-font-ui: "Albert Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --ks-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--ks-font-ui); }
 
-        .container { max-width: 650px; margin: 0 auto; }
+        body {
+            background-color: var(--ks-bg);
+            color: var(--ks-text);
+            min-height: 100vh;
+            padding: 24px 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; padding: 25px 20px; border-radius: 12px; text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px;
-        }
-        header h1 { font-size: 2rem; margin-bottom: 5px; }
-        header p { font-size: 0.95rem; opacity: 0.9; }
+        .container { max-width: 720px; margin: 0 auto; }
 
-        .search-box {
-            background: var(--card-bg); padding: 20px; border-radius: 10px;
-            border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 20px; text-align: center;
+        a:focus-visible, button:focus-visible, input:focus-visible {
+            outline: 2px solid var(--ks-rule-focus);
+            outline-offset: 2px;
         }
-        .search-box label { font-weight: bold; display: block; margin-bottom: 8px; }
-        .search-input-group { display: flex; gap: 8px; justify-content: center; }
-        .search-input-group input {
-            padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px;
-            font-size: 1rem; width: 65%;
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--ks-rule);
         }
+
+        .nav-link {
+            font-family: var(--ks-font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover { color: var(--ks-patina); }
+
+        /* Page Header */
+        .page-header {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-top: 3px solid var(--ks-kinpaku-gold);
+            padding: 26px 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .eyebrow {
+            font-family: var(--ks-font-mono);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ks-patina);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .page-header h1 {
+            font-size: clamp(1.7rem, 3.5vw, 2.2rem);
+            font-weight: 600;
+            color: var(--ks-ink);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: var(--ks-muted);
+            font-size: 0.95rem;
+            max-width: 75ch;
+        }
+
+        /* Lookup */
+        .lookup-bar {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-left: 3px solid var(--ks-patina);
+            border-radius: 4px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .lookup-bar label {
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ks-patina);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .lookup-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .lookup-row input {
+            flex: 1;
+            min-width: 220px;
+            background-color: var(--ks-input-bg);
+            color: var(--ks-ink);
+            border: 1px solid var(--ks-rule);
+            border-radius: 4px;
+            padding: 11px 13px;
+            font-size: 0.95rem;
+            font-family: var(--ks-font-ui);
+            transition: all 0.2s ease;
+        }
+        .lookup-row input:focus {
+            outline: none;
+            border-color: var(--ks-rule-focus);
+            box-shadow: 0 0 0 2px oklch(49% 0.08 188 / 0.15);
+        }
+        .lookup-row input::placeholder { color: var(--ks-faint); font-size: 0.85rem; }
+
         .btn {
-            padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer;
-            font-weight: bold; font-size: 0.95rem; transition: background 0.2s;
+            padding: 11px 20px;
+            font-family: var(--ks-font-ui);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            letter-spacing: 0.02em;
+            text-decoration: none;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--secondary); }
-        .btn-danger { background: var(--danger); color: white; display: inline-block; margin-top: 15px; text-decoration: none; padding: 12px 20px; }
-        .btn-danger:hover { background: #bd2130; }
+        .btn-primary {
+            background-color: var(--ks-kinpaku-gold);
+            color: #ffffff;
+            border: 1px solid var(--ks-kinpaku-gold);
+        }
+        .btn-primary:hover { background-color: var(--ks-kinpaku-hover); border-color: var(--ks-kinpaku-hover); }
+        .btn-danger {
+            background-color: transparent;
+            color: var(--ks-vermilion);
+            border: 1px solid oklch(52% 0.16 35 / 0.3);
+        }
+        .btn-danger:hover {
+            background-color: oklch(52% 0.16 35 / 0.08);
+            border-color: var(--ks-vermilion);
+        }
 
+        /* Result Card */
         .status-card {
-            background: var(--card-bg); border-radius: 10px; padding: 25px 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center;
-            border: 2px solid transparent; display: none; margin-bottom: 20px;
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-top: 3px solid var(--ks-faint);
+            border-radius: 4px;
+            padding: 26px 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            display: none;
+            margin-bottom: 20px;
         }
-
-        .status-card.ok {
-            border-color: var(--success);
-            background: #f8fff9;
-        }
+        .status-card.ok { border-top-color: var(--ks-success); }
         .status-card.danger {
-            border-color: var(--danger);
-            background: #fff8f8;
+            border-top-color: var(--ks-vermilion);
+            background-color: oklch(52% 0.16 35 / 0.04);
         }
 
         .status-badge {
-            display: inline-block; padding: 8px 18px; border-radius: 25px;
-            font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; color: white;
+            display: inline-block;
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border-radius: 4px;
+            margin-bottom: 14px;
+            color: var(--ks-muted);
+            background-color: var(--ks-surface-subtle);
+            border: 1px solid var(--ks-rule);
         }
-        .badge-ok { background: var(--success); }
-        .badge-danger { background: var(--danger); }
+        .badge-ok {
+            color: var(--ks-success);
+            background-color: oklch(45% 0.14 145 / 0.08);
+            border-color: oklch(45% 0.14 145 / 0.3);
+        }
+        .badge-danger {
+            color: var(--ks-vermilion);
+            background-color: oklch(52% 0.16 35 / 0.08);
+            border-color: oklch(52% 0.16 35 / 0.3);
+        }
 
-        .details-table {
-            width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left;
+        .status-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--ks-ink);
+            line-height: 1.3;
+            margin-bottom: 8px;
         }
-        .details-table tr { border-bottom: 1px solid var(--border); }
-        .details-table td { padding: 10px 8px; font-size: 0.95rem; }
-        .details-table td.label { font-weight: bold; color: #555; width: 40%; }
+        .status-card h2.is-ok { color: var(--ks-success); }
+        .status-card h2.is-danger { color: var(--ks-vermilion); }
 
-        .navigation {
-            text-align: center; margin-top: 20px;
+        .status-card .status-msg {
+            font-size: 0.95rem;
+            color: var(--ks-text);
+            max-width: 65ch;
+            margin-bottom: 20px;
         }
-        .navigation a {
-            color: var(--primary); text-decoration: none; font-weight: bold;
+
+        .details-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .details-table tr { border-top: 1px solid var(--ks-rule); }
+        .details-table td { padding: 11px 8px; font-size: 0.95rem; color: var(--ks-ink); vertical-align: top; }
+        .details-table td.label {
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
+            width: 38%;
+            padding-top: 14px;
         }
-        .navigation a:hover { text-decoration: underline; }
+
+        .action-row {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--ks-rule);
+        }
+
+        @media (max-width: 600px) {
+            .page-header, .lookup-bar, .status-card { padding: 18px 14px; }
+            .lookup-row .btn { width: 100%; }
+            .details-table td.label { width: 42%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>🛡️ SafeDrink</h1>
-        <p>Validação Oficial de Rastreabilidade & Autenticidade</p>
+    <div class="top-nav">
+        <a href="index.html" class="nav-link">← Painel Central SafeDrink</a>
+        <span class="nav-link">Portal Público</span>
+    </div>
+
+    <header class="page-header">
+        <span class="eyebrow">SAFEDRINK // VALIDAÇÃO DE AUTENTICIDADE</span>
+        <h1>Consulta de Selo Digital</h1>
+        <p>Verifique a rastreabilidade e a autenticidade da sua bebida informando o número do lote ou escaneando o QR Code da garrafa.</p>
     </header>
 
-    <div class="search-box">
-        <label for="inputLote">Consulte o Selo Digital da sua Bebida:</label>
-        <div class="search-input-group">
-            <input type="number" id="inputLote" placeholder="Digite o ID do Lote (Ex: 1 ou 2)">
-            <button class="btn btn-primary" onclick="consultarManual()">Verificar</button>
+    <div class="lookup-bar">
+        <label for="inputLote">ID do Lote</label>
+        <div class="lookup-row">
+            <input type="number" id="inputLote" placeholder="Digite o ID do lote (Ex: 1 ou 2)">
+            <button class="btn btn-primary" onclick="consultarManual()">Verificar lote</button>
         </div>
     </div>
 
     <!-- RESULTADO DE AUTENTICIDADE -->
-    <div id="cardResultado" class="status-card">
+    <div id="cardResultado" class="status-card" aria-live="polite">
         <div id="statusBadge" class="status-badge"></div>
-        <h2 id="statusTitulo" style="margin-bottom: 10px;"></h2>
-        <p id="statusMensagem" style="font-size: 0.95rem; margin-bottom: 15px; line-height: 1.4;"></p>
+        <h2 id="statusTitulo"></h2>
+        <p id="statusMensagem" class="status-msg"></p>
 
         <table class="details-table" id="tabelaDados">
             <tbody>
-                <tr>
-                    <td class="label">Número do Lote:</td>
-                    <td id="detNumeroLote">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Produto / Bebida:</td>
-                    <td id="detBebida">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Fabricante:</td>
-                    <td id="detFabricante">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Registro MAPA:</td>
-                    <td id="detRegistroMapa">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Distribuidor Oficial:</td>
-                    <td id="detDistribuidor">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Data de Fabricação:</td>
-                    <td id="detDataFab">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Data de Validade:</td>
-                    <td id="detDataVal">-</td>
-                </tr>
-                <tr>
-                    <td class="label">Quantidade no Lote:</td>
-                    <td id="detQtd">-</td>
-                </tr>
+            <tr>
+                <td class="label">Número do lote</td>
+                <td id="detNumeroLote">-</td>
+            </tr>
+            <tr>
+                <td class="label">Produto / bebida</td>
+                <td id="detBebida">-</td>
+            </tr>
+            <tr>
+                <td class="label">Fabricante</td>
+                <td id="detFabricante">-</td>
+            </tr>
+            <tr>
+                <td class="label">Registro MAPA</td>
+                <td id="detRegistroMapa">-</td>
+            </tr>
+            <tr>
+                <td class="label">Distribuidor oficial</td>
+                <td id="detDistribuidor">-</td>
+            </tr>
+            <tr>
+                <td class="label">Data de fabricação</td>
+                <td id="detDataFab">-</td>
+            </tr>
+            <tr>
+                <td class="label">Data de validade</td>
+                <td id="detDataVal">-</td>
+            </tr>
+            <tr>
+                <td class="label">Quantidade no lote</td>
+                <td id="detQtd">-</td>
+            </tr>
             </tbody>
         </table>
 
-        <div id="acaoDenuncia" style="display: none;">
-            <a href="denuncias.html" class="btn btn-danger">🚨 Denunciar Este Lote à Fiscalização</a>
+        <div id="acaoDenuncia" class="action-row" style="display: none;">
+            <a id="linkDenuncia" href="denuncias.html" class="btn btn-danger">🚨 Denunciar este lote à fiscalização</a>
         </div>
-    </div>
-
-    <div class="navigation">
-        <a href="index.html">← Voltar para o Painel SafeDrink</a>
     </div>
 </div>
 
@@ -165,6 +356,10 @@
             document.getElementById("inputLote").value = loteParam;
             verificarLote(loteParam);
         }
+
+        document.getElementById("inputLote").addEventListener("keydown", (e) => {
+            if (e.key === "Enter") consultarManual();
+        });
     });
 
     function consultarManual() {
@@ -184,20 +379,24 @@
         const acaoDenuncia = document.getElementById("acaoDenuncia");
 
         card.style.display = "block";
+        card.className = "status-card";
         badge.className = "status-badge";
         badge.textContent = "Verificando...";
+        titulo.className = "";
         titulo.textContent = "Consultando base de dados do SafeDrink...";
-        mensagem.textContent = "Aguarde enquanto os registros do fabricante e fiscalização são analisados.";
-        card.className = "status-card";
+        mensagem.textContent = "Aguarde enquanto os registros do fabricante e da fiscalização são analisados.";
         acaoDenuncia.style.display = "none";
+        document.getElementById("linkDenuncia").href = "denuncias.html?lote=" + encodeURIComponent(id);
 
         fetch(`/api/bebidas/lote/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.status === "Erro" || !data.object) {
+                    card.className = "status-card danger";
                     badge.className = "status-badge badge-danger";
-                    badge.textContent = "❌ LOTE NÃO ENCONTRADO";
-                    titulo.textContent = "Atenção: Registro Inexistente";
+                    badge.textContent = "❌ Lote não encontrado";
+                    titulo.className = "is-danger";
+                    titulo.textContent = "Atenção: registro inexistente";
                     mensagem.textContent = "Este lote não consta na base oficial do sistema. Pode se tratar de uma bebida não registrada ou adulterada.";
                     limparDetalhes();
                     acaoDenuncia.style.display = "block";
@@ -217,7 +416,7 @@
                 document.getElementById("detBebida").textContent = nomeBebida;
                 document.getElementById("detFabricante").textContent = lote.fabricante ? (lote.fabricante.razaoSocial || lote.fabricante.nome) : "Desconhecido";
                 document.getElementById("detRegistroMapa").textContent = lote.fabricante ? (lote.fabricante.registroMAPA || "Sem registro") : "Sem registro";
-                document.getElementById("detDistribuidor").textContent = lote.distribuidor ? (lote.distribuidor.razaoSocial || lote.distribuidor.cnpj) : "Direto do Fabricante";
+                document.getElementById("detDistribuidor").textContent = lote.distribuidor ? (lote.distribuidor.razaoSocial || lote.distribuidor.cnpj) : "Direto do fabricante";
                 document.getElementById("detDataFab").textContent = lote.dataFabricacao || "N/A";
                 document.getElementById("detDataVal").textContent = lote.dataValidade || "N/A";
                 document.getElementById("detQtd").textContent = lote.quantidade ? `${lote.quantidade} garrafas` : "N/A";
@@ -226,24 +425,26 @@
                 if (lote.suspeito === true) {
                     card.className = "status-card danger";
                     badge.className = "status-badge badge-danger";
-                    badge.textContent = "🚨 ALERTA: PRODUTO SUSPEITO / RECALL";
-                    titulo.textContent = "ATENÇÃO: Produto sob Intervenção Sanitária";
-                    titulo.style.color = "var(--danger)";
+                    badge.textContent = "🚨 Alerta: produto suspeito / recall";
+                    titulo.className = "is-danger";
+                    titulo.textContent = "Atenção: produto sob intervenção sanitária";
                     mensagem.textContent = "Este lote possui histórico de adulteração ou ordem de recolhimento (recall) aberta pelos órgãos fiscalizadores. NÃO CONSUMA ESTE PRODUTO!";
                     acaoDenuncia.style.display = "block";
                 } else {
                     card.className = "status-card ok";
                     badge.className = "status-badge badge-ok";
-                    badge.textContent = "✅ PRODUTO AUTÊNTICO & VERIFICADO";
-                    titulo.textContent = "Selo de Rastreabilidade Conforme";
-                    titulo.style.color = "var(--success)";
+                    badge.textContent = "✅ Produto autêntico e verificado";
+                    titulo.className = "is-ok";
+                    titulo.textContent = "Selo de rastreabilidade conforme";
                     mensagem.textContent = "Este lote foi devidamente registrado, atende aos requisitos oficiais do Ministério da Agricultura (MAPA) e sua procedência de distribuição é confirmada.";
                     acaoDenuncia.style.display = "none";
                 }
             })
             .catch(err => {
+                card.className = "status-card danger";
                 badge.className = "status-badge badge-danger";
-                badge.textContent = "ERRO DE CONEXÃO";
+                badge.textContent = "Erro de conexão";
+                titulo.className = "is-danger";
                 titulo.textContent = "Falha ao conectar ao servidor SafeDrink";
                 mensagem.textContent = "Verifique se o backend Spring Boot está em execução: " + err;
                 acaoDenuncia.style.display = "none";

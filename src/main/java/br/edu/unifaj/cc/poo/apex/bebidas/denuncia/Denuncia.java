@@ -1,6 +1,7 @@
 package br.edu.unifaj.cc.poo.apex.bebidas.denuncia;
 
 import br.edu.unifaj.cc.poo.apex.bebidas.garrafa.Garrafa;
+import br.edu.unifaj.cc.poo.apex.bebidas.lote.Lote;
 import br.edu.unifaj.cc.poo.apex.bebidas.pessoa.Consumidor;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,4 +34,12 @@ public class Denuncia {
     @ManyToOne
     @JoinColumn(name = "garrafa_id")
     private Garrafa garrafa;
+
+    // Denúncia feita pelo consumidor a partir do QR Code (que identifica o lote)
+    @ManyToOne
+    @JoinColumn(name = "lote_id")
+    private Lote lote;
+
+    private String localCompra;
+    private String contato;
 }

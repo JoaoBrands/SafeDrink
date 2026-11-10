@@ -3,272 +3,541 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeDrink - Controle & Rastreabilidade de Bebidas</title>
+    <title>SafeDrink — Painel Central (Impeccable Light)</title>
     <style>
         :root {
-            --primary: #5c1d24;
-            --secondary: #8c2630;
-            --accent: #d99b26;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #2c3e50;
-            --border: #e2e8f0;
+            /* Brand Anchors */
+            --ks-kinpaku-gold: oklch(76% 0.14 82);
+            --ks-kinpaku-hover: oklch(71% 0.15 82);
+            --ks-patina: oklch(49% 0.08 188);
+            --ks-patina-light: oklch(93% 0.03 188);
+
+            /* Surfaces */
+            --ks-bg: oklch(97% 0.008 95);
+            --ks-surface: #ffffff;
+            --ks-surface-subtle: oklch(95% 0.008 95);
+            --ks-input-bg: #ffffff;
+
+            /* Borders & Hairlines */
+            --ks-rule: oklch(25% 0.02 95 / 0.12);
+            --ks-rule-strong: oklch(76% 0.14 82 / 0.6);
+            --ks-rule-focus: oklch(49% 0.08 188 / 0.8);
+
+            /* Text Ramp */
+            --ks-ink: oklch(18% 0.02 95);
+            --ks-text: oklch(25% 0.018 95);
+            --ks-muted: oklch(45% 0.015 95);
+            --ks-faint: oklch(58% 0.012 95);
+
+            /* State */
+            --ks-vermilion: oklch(52% 0.16 35);
+            --ks-success: oklch(45% 0.14 145);
+
+            /* Fonts */
+            --ks-font-ui: "Albert Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --ks-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--ks-font-ui); }
 
-        .container { max-width: 1100px; margin: 0 auto; }
-
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; padding: 30px 20px; border-radius: 12px; text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;
-        }
-        header h1 { font-size: 2.5rem; margin-bottom: 5px; letter-spacing: 1px; }
-        header p { font-size: 1rem; opacity: 0.9; }
-
-        .info-card {
-            background: var(--card-bg); padding: 18px 20px; border-radius: 10px;
-            border-left: 5px solid var(--accent); margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        body {
+            background-color: var(--ks-bg);
+            color: var(--ks-text);
+            min-height: 100vh;
+            padding: 24px 16px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .section-title {
-            color: var(--primary);
-            font-size: 1.3rem;
-            margin: 25px 0 15px 0;
-            padding-bottom: 6px;
-            border-bottom: 2px solid var(--border);
+        .container { max-width: 980px; margin: 0 auto; }
+
+        a:focus-visible, button:focus-visible, input:focus-visible {
+            outline: 2px solid var(--ks-rule-focus);
+            outline-offset: 2px;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--ks-rule);
+        }
+
+        .nav-link {
+            font-family: var(--ks-font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover { color: var(--ks-patina); }
+
+        /* Page Header */
+        .page-header {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-top: 3px solid var(--ks-kinpaku-gold);
+            padding: 26px 24px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        .eyebrow {
+            font-family: var(--ks-font-mono);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ks-patina);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .page-header h1 {
+            font-size: clamp(1.7rem, 3.5vw, 2.2rem);
+            font-weight: 600;
+            color: var(--ks-ink);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: var(--ks-muted);
+            font-size: 0.95rem;
+            max-width: 75ch;
+        }
+
+        .page-header .authors {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--ks-rule);
+            font-size: 0.85rem;
+        }
+        .page-header .authors strong { color: var(--ks-ink); font-weight: 600; }
+
+        /* Section Labels */
+        .section-label {
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
+            margin: 28px 0 14px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+        }
+        .section-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--ks-rule);
         }
 
-        .grid-menu {
+        /* Public Portal Highlight */
+        .portal-card {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-left: 3px solid var(--ks-patina);
+            border-radius: 4px;
+            padding: 22px 24px;
+            text-decoration: none;
+            color: var(--ks-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            transition: all 0.2s ease;
+        }
+        .portal-card:hover {
+            border-color: var(--ks-patina);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        }
+        .portal-card h2 { font-size: 1.1rem; font-weight: 600; color: var(--ks-ink); margin-bottom: 4px; }
+        .portal-card p { font-size: 0.875rem; color: var(--ks-muted); max-width: 70ch; }
+        .portal-card .category-btn { white-space: nowrap; }
+
+        /* Navigation Cards */
+        .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 8px;
         }
 
-        .card-link {
-            background: var(--card-bg); padding: 20px 15px; border-radius: 10px;
-            text-align: center; text-decoration: none; color: var(--text);
-            border: 1px solid var(--border); transition: all 0.25s ease;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        .category-card {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-radius: 4px;
+            padding: 22px 18px;
+            text-decoration: none;
+            color: var(--ks-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: all 0.2s ease;
         }
-        .card-link:hover {
-            transform: translateY(-4px); border-color: var(--secondary);
-            box-shadow: 0 6px 16px rgba(140, 38, 48, 0.15);
+        .category-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--ks-kinpaku-gold);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
         }
-        .card-link h3 { color: var(--primary); margin-bottom: 6px; font-size: 1.15rem; }
-        .card-link p { font-size: 0.88rem; color: #666; }
+        .category-icon { font-size: 2.2rem; margin-bottom: 10px; }
+        .category-card h3 { font-size: 1.05rem; font-weight: 600; color: var(--ks-ink); margin-bottom: 6px; }
+        .category-card p { font-size: 0.875rem; color: var(--ks-muted); margin-bottom: 14px; }
+        .category-btn {
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ks-patina);
+            font-weight: 600;
+            margin-top: auto;
+        }
 
-        .features-grid {
+        /* Tools */
+        .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
-            margin-top: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 8px;
         }
 
-        .feature-card {
-            background: var(--card-bg); padding: 22px; border-radius: 10px;
-            border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .feature-card h2 {
-            color: var(--primary);
-            font-size: 1.2rem;
-            margin-bottom: 12px;
-        }
-
-        .form-group {
+        .card {
+            background-color: var(--ks-surface);
+            border: 1px solid var(--ks-rule);
+            border-radius: 4px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
             display: flex;
             flex-direction: column;
-            margin-bottom: 12px;
         }
+        .card h2 { font-size: 1.1rem; font-weight: 600; color: var(--ks-ink); margin-bottom: 6px; }
+        .card > p { font-size: 0.875rem; color: var(--ks-muted); margin-bottom: 16px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
         .form-group label {
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ks-muted);
         }
-        .form-group input {
-            padding: 9px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
+
+        input[type="number"] {
+            background-color: var(--ks-input-bg);
+            color: var(--ks-ink);
+            border: 1px solid var(--ks-rule);
+            border-radius: 4px;
+            padding: 11px 13px;
             font-size: 0.95rem;
+            font-family: var(--ks-font-ui);
+            transition: all 0.2s ease;
+            width: 100%;
         }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--ks-rule-focus);
+            box-shadow: 0 0 0 2px oklch(49% 0.08 188 / 0.15);
+        }
+        input::placeholder { color: var(--ks-faint); font-size: 0.85rem; }
 
         .btn {
-            padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer;
-            font-weight: bold; transition: background 0.2s; width: 100%;
+            padding: 11px 18px;
+            font-family: var(--ks-font-ui);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            letter-spacing: 0.02em;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--secondary); }
+        .btn-primary {
+            background-color: var(--ks-kinpaku-gold);
+            color: #ffffff;
+            border: 1px solid var(--ks-kinpaku-gold);
+        }
+        .btn-primary:hover { background-color: var(--ks-kinpaku-hover); border-color: var(--ks-kinpaku-hover); }
+        .btn-patina {
+            background-color: var(--ks-patina-light);
+            color: var(--ks-patina);
+            border: 1px solid oklch(49% 0.08 188 / 0.3);
+        }
+        .btn-patina:hover { background-color: oklch(90% 0.04 188); border-color: var(--ks-patina); }
 
-        pre {
-            background: #272822; color: #f8f8f2; padding: 12px; border-radius: 6px;
-            overflow-x: auto; max-height: 250px; font-size: 0.85rem; margin-top: 12px;
+        /* Faux Terminal */
+        .terminal-card {
+            background-color: #161819;
+            border: 1px solid #282a2d;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
         }
+        .terminal-header {
+            background-color: #1e2124;
+            border-bottom: 1px solid #282a2d;
+            padding: 9px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .terminal-dots { display: flex; gap: 6px; align-items: center; }
+        .terminal-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+        .terminal-title {
+            font-family: var(--ks-font-mono);
+            font-size: 0.6875rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: #8a9096;
+        }
+        pre#output {
+            color: #72e0a8;
+            font-family: var(--ks-font-mono);
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            padding: 16px;
+            overflow-x: auto;
+            max-height: 250px;
+            margin: 0;
+            background-color: transparent;
+        }
+        pre#output::-webkit-scrollbar { height: 6px; width: 6px; }
+        pre#output::-webkit-scrollbar-track { background: #161819; }
+        pre#output::-webkit-scrollbar-thumb { background: #2f3438; border-radius: 3px; }
 
-        .qr-result {
-            margin-top: 15px;
-            text-align: center;
-        }
+        /* QR Result */
+        .qr-result { margin-top: 18px; text-align: center; }
         .qr-result img {
             width: 170px;
             height: 170px;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
+            border: 1px solid var(--ks-rule);
+            border-top: 3px solid var(--ks-kinpaku-gold);
+            border-radius: 4px;
+            padding: 8px;
+            background: #ffffff;
             display: none;
             margin: 0 auto;
         }
         .qr-result p {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 6px;
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            color: var(--ks-faint);
+            margin-top: 8px;
             word-break: break-all;
         }
         .qr-result a {
             display: inline-block;
-            margin-top: 8px;
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 0.85rem;
+            margin-top: 10px;
+            font-family: var(--ks-font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--ks-patina);
             text-decoration: none;
         }
-        .qr-result a:hover {
-            text-decoration: underline;
+        .qr-result a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .page-header, .card, .portal-card { padding: 18px 14px; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .category-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>🍷 SafeDrink</h1>
-        <p>Sistema Avançado de Gestão, Rastreabilidade e Qualidade de Bebidas</p>
+    <div class="top-nav">
+        <span class="nav-link">Painel Central</span>
+        <a href="validar.html" class="nav-link">Validação de Autenticidade ↗</a>
+    </div>
+
+    <header class="page-header">
+        <span class="eyebrow">SAFEDRINK // PAINEL CENTRAL</span>
+        <h1>SafeDrink</h1>
+        <p>Sistema avançado de gestão, rastreabilidade e qualidade de bebidas.</p>
+        <p class="authors"><strong>Desenvolvedores:</strong> João Gabriel Brandão (RA 12529615) e João Gabriel Oliveira (RA 12529796)</p>
     </header>
 
-    <div class="info-card">
-        <p><strong>Desenvolvedores:</strong> João Gabriel Brandão (RA 12529615) & João Gabriel Oliveira (RA 12529796)</p>
-    </div>
-
-    <!-- SEÇÃO: PORTAL PÚBLICO DO CONSUMIDOR -->
-    <h2 class="section-title">🛡️ Portal de Autenticidade (Público)</h2>
-    <div class="grid-menu" style="grid-template-columns: 1fr;">
-        <a href="validar.html" class="card-link" style="border-left: 6px solid #28a745; text-align: left; align-items: flex-start; padding: 18px 25px;">
-            <h3 style="color: #28a745;">🔍 Consultar Selo Digital / Validar Autenticidade da Bebida</h3>
+    <!-- PORTAL PÚBLICO DO CONSUMIDOR -->
+    <div class="section-label">Portal de autenticidade (público)</div>
+    <a href="validar.html" class="portal-card">
+        <div>
+            <h2>🔍 Validar autenticidade da bebida</h2>
             <p>Página pública para o consumidor escanear o QR Code ou digitar o lote e verificar se o produto é legítimo ou possui recall de falsificação.</p>
+        </div>
+        <span class="category-btn">Consultar selo digital →</span>
+    </a>
+
+    <!-- BEBIDAS -->
+    <div class="section-label">Tipos de bebidas</div>
+    <div class="category-grid">
+        <a href="vinho.html" class="category-card">
+            <div class="category-icon">🍷</div>
+            <h3>Vinhos</h3>
+            <p>Safras, uvas, regiões e consulta de EAN.</p>
+            <span class="category-btn">Acessar →</span>
+        </a>
+        <a href="destilado.html" class="category-card">
+            <div class="category-icon">🥃</div>
+            <h3>Destilados</h3>
+            <p>Envelhecimento, teor alcoólico e marcas.</p>
+            <span class="category-btn">Acessar →</span>
+        </a>
+        <a href="fermentado.html" class="category-card">
+            <div class="category-icon">🍺</div>
+            <h3>Fermentados</h3>
+            <p>Cervejas, sidras e bebidas fermentadas.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
     </div>
 
-    <!-- SEÇÃO: BEBIDAS -->
-    <h2 class="section-title">🍾 Tipos de Bebidas</h2>
-    <div class="grid-menu">
-        <a href="vinho.html" class="card-link">
-            <h3>🍷 Vinhos</h3>
-            <p>Safras, uvas, regiões e consulta de EAN</p>
+    <!-- RASTREABILIDADE & DISTRIBUIÇÃO -->
+    <div class="section-label">Rastreabilidade e distribuição</div>
+    <div class="category-grid">
+        <a href="lotes.html" class="category-card">
+            <div class="category-icon">🏷️</div>
+            <h3>Lotes</h3>
+            <p>Validade, fabricação e status de suspeição.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
-        <a href="destilado.html" class="card-link">
-            <h3>🥃 Destilados</h3>
-            <p>Envelhecimento, teor alcoólico e marcas</p>
+        <a href="garrafa.html" class="category-card">
+            <div class="category-icon">🍾</div>
+            <h3>Garrafas</h3>
+            <p>Código de barras, data de envase e lote.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
-        <a href="fermentado.html" class="card-link">
-            <h3>🍺 Fermentados</h3>
-            <p>Cervejas, sidras e bebidas fermentadas</p>
+        <a href="distribuidor.html" class="category-card">
+            <div class="category-icon">🚚</div>
+            <h3>Distribuidores</h3>
+            <p>CNPJ, região de atuação e contatos.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
-    </div>
-
-    <!-- SEÇÃO: RASTREABILIDADE & CADEIA -->
-    <h2 class="section-title">📦 Rastreabilidade & Distribuição</h2>
-    <div class="grid-menu">
-        <a href="lotes.html" class="card-link">
-            <h3>🏷️ Lotes</h3>
-            <p>Validade, fabricação e status de suspeição</p>
-        </a>
-        <a href="garrafa.html" class="card-link">
-            <h3>🍾 Garrafas</h3>
-            <p>Código de barras, data de envase e lote</p>
-        </a>
-        <a href="distribuidor.html" class="card-link">
-            <h3>🚚 Distribuidores</h3>
-            <p>CNPJ, região de atuação e contatos</p>
-        </a>
-        <a href="pontovenda.html" class="card-link">
-            <h3>🏪 Pontos de Venda</h3>
-            <p>Lojas, bares e estabelecimentos comerciais</p>
+        <a href="pontovenda.html" class="category-card">
+            <div class="category-icon">🏪</div>
+            <h3>Pontos de Venda</h3>
+            <p>Lojas, bares e estabelecimentos comerciais.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
     </div>
 
-    <!-- SEÇÃO: FISCALIZAÇÃO & QUALIDADE -->
-    <h2 class="section-title">🛡️ Fiscalização & Qualidade</h2>
-    <div class="grid-menu">
-        <a href="denuncias.html" class="card-link">
-            <h3>🚨 Denúncias</h3>
-            <p>Registro de adulteração e suspeitas</p>
+    <!-- FISCALIZAÇÃO & QUALIDADE -->
+    <div class="section-label">Fiscalização e qualidade</div>
+    <div class="category-grid">
+        <a href="denuncias.html" class="category-card">
+            <div class="category-icon">🚨</div>
+            <h3>Denúncias</h3>
+            <p>Registro de adulteração e suspeitas.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
-        <a href="analise.html" class="card-link">
-            <h3>🔬 Análises</h3>
-            <p>Laudos laboratoriais e averiguações</p>
+        <a href="analise.html" class="category-card">
+            <div class="category-icon">🔬</div>
+            <h3>Análises</h3>
+            <p>Laudos laboratoriais e averiguações.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
-        <a href="recall.html" class="card-link">
-            <h3>⚠️ Recalls</h3>
-            <p>Ordens de recolhimento de lotes afetados</p>
+        <a href="recall.html" class="category-card">
+            <div class="category-icon">⚠️</div>
+            <h3>Recalls</h3>
+            <p>Ordens de recolhimento de lotes afetados.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
-        <a href="alertas.html" class="card-link">
-            <h3>📢 Alertas</h3>
-            <p>Comunicados de segurança ao público</p>
-        </a>
-    </div>
-
-    <!-- SEÇÃO: PESSOAS & ATORES -->
-    <h2 class="section-title">👥 Atores do Sistema & Métricas</h2>
-    <div class="grid-menu">
-        <a href="consumidor.html" class="card-link">
-            <h3>👤 Consumidores</h3>
-            <p>Cadastro de clientes e denunciantes</p>
-        </a>
-        <a href="fabricante.html" class="card-link">
-            <h3>🏭 Fabricantes</h3>
-            <p>Produtores, registro MAPA e conformidade</p>
-        </a>
-        <a href="fiscal.html" class="card-link">
-            <h3>👮 Fiscais</h3>
-            <p>Agentes de inspeção e órgãos reguladores</p>
-        </a>
-        <a href="relatorio.html" class="card-link">
-            <h3>📊 Relatórios & KPIs</h3>
-            <p>Estatísticas gerais e métricas do sistema</p>
+        <a href="alertas.html" class="category-card">
+            <div class="category-icon">📢</div>
+            <h3>Alertas</h3>
+            <p>Comunicados de segurança ao público.</p>
+            <span class="category-btn">Acessar →</span>
         </a>
     </div>
 
-    <!-- SEÇÃO: FERRAMENTAS INTEGRADAS -->
-    <div class="features-grid">
+    <!-- ATORES & MÉTRICAS -->
+    <div class="section-label">Atores do sistema e métricas</div>
+    <div class="category-grid">
+        <a href="consumidor.html" class="category-card">
+            <div class="category-icon">👤</div>
+            <h3>Consumidores</h3>
+            <p>Cadastro de clientes e denunciantes.</p>
+            <span class="category-btn">Acessar →</span>
+        </a>
+        <a href="fabricante.html" class="category-card">
+            <div class="category-icon">🏭</div>
+            <h3>Fabricantes</h3>
+            <p>Produtores, registro MAPA e conformidade.</p>
+            <span class="category-btn">Acessar →</span>
+        </a>
+        <a href="fiscal.html" class="category-card">
+            <div class="category-icon">👮</div>
+            <h3>Fiscais</h3>
+            <p>Agentes de inspeção e órgãos reguladores.</p>
+            <span class="category-btn">Acessar →</span>
+        </a>
+        <a href="relatorio.html" class="category-card">
+            <div class="category-icon">📊</div>
+            <h3>Relatórios e KPIs</h3>
+            <p>Estatísticas gerais e métricas do sistema.</p>
+            <span class="category-btn">Acessar →</span>
+        </a>
+    </div>
+
+    <!-- FERRAMENTAS INTEGRADAS -->
+    <div class="section-label">Ferramentas integradas</div>
+    <div class="tools-grid">
         <!-- Consulta Rápida REST -->
-        <div class="feature-card">
-            <h2>⚡ Consulta Rápida (API Fetch)</h2>
-            <p style="font-size: 0.9rem; margin-bottom: 12px; color: #666;">
-                Teste assíncrono direto com o Spring Boot usando JavaScript Vanilla nativo:
-            </p>
-            <button class="btn btn-primary" onclick="carregarVinhos()">Listar Vinhos via Fetch()</button>
-            <pre id="output">Clique no botão para consultar os dados do Spring Boot...</pre>
+        <div class="card">
+            <h2>⚡ Consulta rápida (API Fetch)</h2>
+            <p>Teste assíncrono direto com o Spring Boot usando JavaScript nativo.</p>
+            <button class="btn btn-patina" onclick="carregarVinhos()">Listar vinhos via fetch()</button>
+            <div class="terminal-card">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="terminal-dot dot-red"></span>
+                        <span class="terminal-dot dot-yellow"></span>
+                        <span class="terminal-dot dot-green"></span>
+                    </div>
+                    <span class="terminal-title">GET /api/bebidas/vinho</span>
+                </div>
+                <pre id="output">Clique no botão para consultar os dados do Spring Boot...</pre>
+            </div>
         </div>
 
         <!-- Selo de Rastreabilidade QR Code -->
-        <div class="feature-card">
-            <h2>📱 Selo de Rastreabilidade (QR Code)</h2>
+        <div class="card">
+            <h2>📱 Selo de rastreabilidade (QR Code)</h2>
+            <p>Gere o QR Code que leva o consumidor direto à página de validação do lote.</p>
             <div class="form-group">
-                <label for="loteId">ID do Lote:</label>
+                <label for="loteId">ID do Lote</label>
                 <input type="number" id="loteId" placeholder="Ex: 1 (Autêntico) ou 2 (Recall)">
             </div>
-            <button class="btn btn-primary" onclick="gerarQrCodeLote()">Gerar Selo Digital</button>
+            <button class="btn btn-primary" onclick="gerarQrCodeLote()">Gerar selo digital</button>
 
             <div class="qr-result">
-                <img id="imgQrCode" src="" alt="QR Code Rastreio">
+                <img id="imgQrCode" src="" alt="QR Code de rastreio do lote">
                 <p id="qrUrlText"></p>
-                <a id="qrLink" href="#" target="_blank" style="display: none;">🔗 Abrir Página de Validação em Nova Aba</a>
+                <a id="qrLink" href="#" target="_blank" rel="noopener" style="display: none;">Abrir página de validação em nova aba ↗</a>
             </div>
         </div>
     </div>
@@ -293,7 +562,7 @@
         const link = document.getElementById("qrLink");
 
         img.src = qrCodeUrl;
-        img.style.display = "inline-block";
+        img.style.display = "block";
         txt.textContent = "Destino do QR Code: " + validacaoUrl;
         link.href = validacaoUrl;
         link.style.display = "inline-block";
