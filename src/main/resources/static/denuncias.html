@@ -166,7 +166,7 @@
     function buscar() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para buscar!"); return; }
-        fetch("/api/bebidas/denuncia/" + id).then(r => r.json()).then(dados => {
+        fetchProtegido("/api/bebidas/denuncia/" + id).then(r => r.json()).then(dados => {
             if (dados.status === "Erro") { mostrarResultado(dados); return; }
             let denuncia = dados.object;
             document.getElementById("data").value = denuncia.data || ""; document.getElementById("descricao").value = denuncia.descricao || "";
@@ -180,17 +180,18 @@
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para atualizar!"); return; }
         let denuncia = { id: Number(id), data: document.getElementById("data").value, descricao: document.getElementById("descricao").value, status: document.getElementById("status").value, consumidor: criarObjetoId(document.getElementById("consumidor").value), garrafa: criarObjetoId(document.getElementById("garrafa").value), lote: criarObjetoId(document.getElementById("lote").value), localCompra: document.getElementById("localCompra").value, contato: document.getElementById("contato").value };
-        fetch("/api/bebidas/denuncia/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(denuncia) })
+        fetchProtegido("/api/bebidas/denuncia/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(denuncia) })
             .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function excluir() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para excluir!"); return; }
-        fetch("/api/bebidas/denuncia/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetchProtegido("/api/bebidas/denuncia/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function listar() {
-        fetch("/api/bebidas/denuncia").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetchProtegido("/api/bebidas/denuncia").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
 </script>
+<script src="acesso.js"></script>
 </body>
 </html>

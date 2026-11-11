@@ -4,11 +4,15 @@ import br.edu.unifaj.cc.poo.apex.bebidas.Retorno;
 import br.edu.unifaj.cc.poo.apex.bebidas.bebida.Destilado;
 import br.edu.unifaj.cc.poo.apex.bebidas.bebida.repository.DestiladoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.unifaj.cc.poo.apex.bebidas.seguranca.ControleAcesso;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bebidas/destilado")
 public class DestiladoController {
+
+    @Autowired
+    ControleAcesso controleAcesso;
 
     @Autowired
     DestiladoRepository destiladoRepository;
@@ -36,8 +40,9 @@ public class DestiladoController {
     }
 
     @PostMapping
-    public Retorno incluir(@RequestBody Destilado destilado) {
+    public Retorno incluir(@RequestBody Destilado destilado, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             destilado.setId(null);
             return new Retorno(destiladoRepository.save(destilado));
         } catch (Exception ex) {
@@ -46,8 +51,9 @@ public class DestiladoController {
     }
 
     @PutMapping("/{id}")
-    public Retorno alterar(@PathVariable Integer id, @RequestBody Destilado destilado) {
+    public Retorno alterar(@PathVariable Integer id, @RequestBody Destilado destilado, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Destilado destiladoExistente = destiladoRepository.findById(id).orElse(null);
             if (destiladoExistente == null) {
                 return new Retorno("Destilado não encontrado: " + id);
@@ -60,8 +66,9 @@ public class DestiladoController {
     }
 
     @DeleteMapping("/{id}")
-    public Retorno excluir(@PathVariable Integer id) {
+    public Retorno excluir(@PathVariable Integer id, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Destilado destilado = destiladoRepository.findById(id).orElse(null);
             if (destilado == null) {
                 return new Retorno("Destilado não encontrado: " + id);

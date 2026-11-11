@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,12 @@ public class Denuncia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    /**
+     * Protocolo de acompanhamento devolvido ao consumidor (ex.: SD-2026-7K3F9A).
+     * Não é sequencial: sem ele ninguém consulta a denúncia de outra pessoa.
+     */
+    private String protocolo;
 
     private String data;
     private String descricao;
@@ -42,4 +49,12 @@ public class Denuncia {
 
     private String localCompra;
     private String contato;
+
+    /**
+     * Código do lote como o consumidor o leu (ID ou número do rótulo). Não é
+     * gravado: o DenunciaService usa para achar o lote ou, se ele não existir,
+     * registrar o código na descrição (QR forjado também é evidência).
+     */
+    @Transient
+    private String loteInformado;
 }

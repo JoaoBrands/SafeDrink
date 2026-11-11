@@ -148,13 +148,13 @@
         return recall;
     }
     function cadastrar() {
-        fetch("/api/bebidas/recall", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterRecall(false)) })
+        fetchProtegido("/api/bebidas/recall", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterRecall(false)) })
         .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function buscar() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para buscar!"); return; }
-        fetch("/api/bebidas/recall/" + id).then(r => r.json()).then(dados => {
+        fetchProtegido("/api/bebidas/recall/" + id).then(r => r.json()).then(dados => {
             if (dados.status === "Erro") { mostrarResultado(dados); return; }
             let recall = dados.object;
             document.getElementById("dataInicio").value = recall.dataInicio || ""; document.getElementById("dataFim").value = recall.dataFim || "";
@@ -166,17 +166,18 @@
     function atualizar() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para atualizar!"); return; }
-        fetch("/api/bebidas/recall/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterRecall(true)) })
+        fetchProtegido("/api/bebidas/recall/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterRecall(true)) })
         .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function excluir() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para excluir!"); return; }
-        fetch("/api/bebidas/recall/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetchProtegido("/api/bebidas/recall/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function listar() {
-        fetch("/api/bebidas/recall").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetchProtegido("/api/bebidas/recall").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
 </script>
+<script src="acesso.js"></script>
 </body>
 </html>

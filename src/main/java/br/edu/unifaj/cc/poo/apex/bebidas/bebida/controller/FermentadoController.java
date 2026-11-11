@@ -4,11 +4,15 @@ import br.edu.unifaj.cc.poo.apex.bebidas.Retorno;
 import br.edu.unifaj.cc.poo.apex.bebidas.bebida.Fermentado;
 import br.edu.unifaj.cc.poo.apex.bebidas.bebida.repository.FermentadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.unifaj.cc.poo.apex.bebidas.seguranca.ControleAcesso;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bebidas/fermentado")
 public class FermentadoController {
+
+    @Autowired
+    ControleAcesso controleAcesso;
 
     @Autowired
     FermentadoRepository fermentadoRepository;
@@ -36,8 +40,9 @@ public class FermentadoController {
     }
 
     @PostMapping
-    public Retorno incluir(@RequestBody Fermentado fermentado) {
+    public Retorno incluir(@RequestBody Fermentado fermentado, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             fermentado.setId(null);
             return new Retorno(fermentadoRepository.save(fermentado));
         } catch (Exception ex) {
@@ -46,8 +51,9 @@ public class FermentadoController {
     }
 
     @PutMapping("/{id}")
-    public Retorno alterar(@PathVariable Integer id, @RequestBody Fermentado fermentado) {
+    public Retorno alterar(@PathVariable Integer id, @RequestBody Fermentado fermentado, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Fermentado fermentadoExistente = fermentadoRepository.findById(id).orElse(null);
             if (fermentadoExistente == null) {
                 return new Retorno("Fermentado não encontrado: " + id);
@@ -60,8 +66,9 @@ public class FermentadoController {
     }
 
     @DeleteMapping("/{id}")
-    public Retorno excluir(@PathVariable Integer id) {
+    public Retorno excluir(@PathVariable Integer id, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Fermentado fermentado = fermentadoRepository.findById(id).orElse(null);
             if (fermentado == null) {
                 return new Retorno("Fermentado não encontrado: " + id);

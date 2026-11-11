@@ -27,6 +27,9 @@ public class Garrafa {
     private String seloFiscal;
     private String status;
 
+    private String codigoUnico;
+    private Integer contadorVerificacoes = 0;
+
     @ManyToOne
     @JoinColumn(name = "lote_id")
     private Lote lote;
@@ -46,5 +49,9 @@ public class Garrafa {
             }
             this.lote.setId(loteId);
         }
+    }
+
+    public Integer getContadorVerificacoes() {
+        return contadorVerificacoes == null ? 0 : contadorVerificacoes;
     }
 }

@@ -513,26 +513,27 @@
             return;
         }
 
-        fetch(`https://br.openfoodfacts.org/api/v2/product/${ean}.json`)
+        // Consulta no NOSSO backend, que fala com a API de Produtos.
+        fetch(`/api/bebidas/external/tributacao/${encodeURIComponent(ean)}`)
             .then(response => response.json())
-            .then(data => {
-                if (data.status === 1) {
-                    const produto = data.product;
-                    document.getElementById("nome").value = produto.product_name || produto.product_name_pt || "";
-                    document.getElementById("marca").value = produto.brands || "";
-
-                    if (produto.nutriments && produto.nutriments.alcohol) {
-                        document.getElementById("teorAlcoolico").value = produto.nutriments.alcohol;
-                    }
-
-                    alert("Dados carregados com sucesso do Open Food Facts!");
-                } else {
-                    alert("Produto não encontrado na base do Open Food Facts.");
+            .then(dados => {
+                if (dados.status === "Erro" || !dados.object) {
+                    alert(dados.mensagemErro || "Produto não encontrado para este código.");
+                    return;
                 }
+
+                const produto = dados.object;
+                document.getElementById("nome").value = produto.descricao || "";
+
+                // A consulta fiscal não devolve marca nem teor alcoólico.
+                alert("Produto: " + (produto.descricao || "-")
+                    + "\nNCM: " + (produto.ncm || "-")
+                    + "\nCEST: " + (produto.cest || "-")
+                    + "\n\nMarca e teor alcoólico não existem na consulta fiscal: preencha manualmente.");
             })
             .catch(err => {
                 console.error("Erro na consulta:", err);
-                alert("Erro ao consultar a API do Open Food Facts.");
+                alert("Erro ao consultar a API de produtos.");
             });
     }
 

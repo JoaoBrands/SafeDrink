@@ -4,11 +4,15 @@ import br.edu.unifaj.cc.poo.apex.bebidas.Retorno;
 import br.edu.unifaj.cc.poo.apex.bebidas.distribuidor.PontoVenda;
 import br.edu.unifaj.cc.poo.apex.bebidas.distribuidor.repository.PontoVendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.unifaj.cc.poo.apex.bebidas.seguranca.ControleAcesso;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bebidas/pontovenda")
 public class PontoVendaController {
+
+    @Autowired
+    ControleAcesso controleAcesso;
 
     @Autowired
     PontoVendaRepository pontoVendaRepository;
@@ -36,8 +40,9 @@ public class PontoVendaController {
     }
 
     @PostMapping
-    public Retorno incluir(@RequestBody PontoVenda pontoVenda) {
+    public Retorno incluir(@RequestBody PontoVenda pontoVenda, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             pontoVenda.setId(null);
             return new Retorno(pontoVendaRepository.save(pontoVenda));
         } catch (Exception ex) {
@@ -46,8 +51,9 @@ public class PontoVendaController {
     }
 
     @PutMapping("/{id}")
-    public Retorno alterar(@PathVariable Integer id, @RequestBody PontoVenda pontoVenda) {
+    public Retorno alterar(@PathVariable Integer id, @RequestBody PontoVenda pontoVenda, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             PontoVenda pontoVendaExistente = pontoVendaRepository.findById(id).orElse(null);
             if (pontoVendaExistente == null) {
                 return new Retorno("Ponto de Venda não encontrado: " + id);
@@ -60,8 +66,9 @@ public class PontoVendaController {
     }
 
     @DeleteMapping("/{id}")
-    public Retorno excluir(@PathVariable Integer id) {
+    public Retorno excluir(@PathVariable Integer id, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             PontoVenda pontoVenda = pontoVendaRepository.findById(id).orElse(null);
             if (pontoVenda == null) {
                 return new Retorno("Ponto de Venda não encontrado: " + id);

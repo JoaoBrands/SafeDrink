@@ -618,7 +618,7 @@
     function cadastrar() {
         let lote = lerLote(false);
 
-        fetch("/api/bebidas/lote", {
+        fetchProtegido("/api/bebidas/lote", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(lote)
@@ -635,7 +635,7 @@
             return;
         }
 
-        fetch("/api/bebidas/lote/" + id)
+        fetchProtegido("/api/bebidas/lote/" + id)
         .then(resposta => resposta.json())
         .then(dados => {
             if (dados.status === "Erro") {
@@ -658,7 +658,7 @@
 
         let lote = lerLote(true);
 
-        fetch("/api/bebidas/lote/" + id, {
+        fetchProtegido("/api/bebidas/lote/" + id, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(lote)
@@ -675,18 +675,19 @@
             return;
         }
 
-        fetch("/api/bebidas/lote/" + id, { method: "DELETE" })
+        fetchProtegido("/api/bebidas/lote/" + id, { method: "DELETE" })
         .then(resposta => resposta.json())
         .then(dados => mostrarResultado(dados))
         .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
 
     function listar() {
-        fetch("/api/bebidas/lote")
+        fetchProtegido("/api/bebidas/lote")
         .then(resposta => resposta.json())
         .then(dados => mostrarResultado(dados))
         .catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
 </script>
+<script src="acesso.js"></script>
 </body>
 </html>

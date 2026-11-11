@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Banco H2 local (gerado em tempo de execucao) ###
+# A fonte dos dados de demonstracao e o CargaDadosInicial.
+*.mv.db
+*.trace.db

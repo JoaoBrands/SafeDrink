@@ -86,17 +86,21 @@
 
     <div class="section-label" style="margin-top: 32px;">Consulta por código de barras</div>
     <div class="search-card">
-        <h2>🔍 Consulta por Código EAN (Open Food Facts)</h2>
-        <p>Consulte dados oficiais de marcas e teores através da base aberta do Open Food Facts:</p>
+        <h2>🔍 Consulta por Código EAN (API de Produtos)</h2>
+        <p>Consulte a descrição e os dados fiscais oficiais do produto (NCM, CEST e código ANVISA) a partir do código de barras:</p>
         <div class="search-bar">
-            <input type="text" id="ean" placeholder="Digite o código EAN (Ex: 7891910000197)">
+            <input type="text" id="ean" placeholder="Digite o código EAN (Ex: 78905351)">
             <button type="button" onclick="consultarEan()">Buscar Produto</button>
         </div>
         <div id="resultadoEan" class="ean-result-box">
-            <div class="ean-field"><strong>Nome do Produto:</strong> <span id="resNome">-</span></div>
-            <div class="ean-field"><strong>Marca:</strong> <span id="resMarca">-</span></div>
-            <div class="ean-field"><strong>Teor Alcoólico Estimado:</strong> <span id="resTeor">-</span></div>
-            <div class="ean-field"><strong>Origem / Categoria:</strong> <span id="resCategoria">-</span></div>
+            <div class="ean-field"><strong>Descrição:</strong> <span id="resDescricao">-</span></div>
+            <div class="ean-field"><strong>NCM:</strong> <span id="resNcm">-</span></div>
+            <div class="ean-field"><strong>CEST:</strong> <span id="resCest">-</span></div>
+            <div class="ean-field"><strong>Código ANVISA:</strong> <span id="resAnvisa">-</span></div>
+            <div class="ean-field">
+                <img id="resImagem" alt="Imagem do produto"
+                     style="display:none; max-width:180px; margin-top:12px; border:1px solid #ddd; border-radius:4px;">
+            </div>
         </div>
     </div>
 </div>
@@ -106,28 +110,47 @@
         const ean = document.getElementById("ean").value.trim();
         const box = document.getElementById("resultadoEan");
         if (!ean) { alert("Informe o código de barras!"); return; }
+
         box.className = "ean-result-box active";
-        document.getElementById("resNome").textContent = "Consultando dados na API...";
-        document.getElementById("resMarca").textContent = "Aguarde...";
-        document.getElementById("resTeor").textContent = "...";
-        document.getElementById("resCategoria").textContent = "...";
-        fetch(`https://br.openfoodfacts.org/api/v2/product/${ean}.json`)
+        document.getElementById("resDescricao").textContent = "Consultando dados na API...";
+        document.getElementById("resNcm").textContent = "...";
+        document.getElementById("resCest").textContent = "...";
+        document.getElementById("resAnvisa").textContent = "...";
+        const imagem = document.getElementById("resImagem");
+        imagem.style.display = "none";
+
+        // 1. dados fiscais, via nosso backend
+        fetch(`/api/bebidas/external/tributacao/${encodeURIComponent(ean)}`)
             .then(response => response.json())
-            .then(data => {
-                if (data.status === 1) {
-                    const produto = data.product;
-                    document.getElementById("resNome").textContent = produto.product_name || produto.product_name_pt || "Não informado";
-                    document.getElementById("resMarca").textContent = produto.brands || "Não informada";
-                    document.getElementById("resTeor").textContent = (produto.nutriments && produto.nutriments.alcohol) ? `${produto.nutriments.alcohol}%` : "Não detectado no rótulo";
-                    document.getElementById("resCategoria").textContent = produto.categories || "Geral";
-                } else {
-                    document.getElementById("resNome").textContent = "Produto não localizado no Open Food Facts.";
-                    document.getElementById("resMarca").textContent = "-";
-                    document.getElementById("resTeor").textContent = "-";
-                    document.getElementById("resCategoria").textContent = "-";
+            .then(dados => {
+                if (dados.status === "Erro" || !dados.object) {
+                    document.getElementById("resDescricao").textContent = dados.mensagemErro || "Produto não encontrado.";
+                    document.getElementById("resNcm").textContent = "-";
+                    document.getElementById("resCest").textContent = "-";
+                    document.getElementById("resAnvisa").textContent = "-";
+                    return;
                 }
+                const produto = dados.object;
+                document.getElementById("resDescricao").textContent = produto.descricao || "Não informado";
+                document.getElementById("resNcm").textContent = produto.ncm || "Não informado";
+                document.getElementById("resCest").textContent = produto.cest || "Não informado";
+                document.getElementById("resAnvisa").textContent = produto.cod_anvisa || "Não informado";
+
+                // 2. imagem do produto (opcional)
+                fetch(`/api/bebidas/external/imagem/${encodeURIComponent(ean)}`)
+                    .then(r => r.json())
+                    .then(respostaImagem => {
+                        const img = respostaImagem.object;
+                        if (respostaImagem.status !== "Erro" && img && img.imagem_base64) {
+                            imagem.src = `data:${img.mime_type || "image/jpeg"};base64,${img.imagem_base64}`;
+                            imagem.style.display = "block";
+                        }
+                    })
+                    .catch(() => { /* imagem é opcional */ });
             })
-            .catch(err => { document.getElementById("resNome").textContent = "Erro na conexão: " + err; });
+            .catch(err => {
+                document.getElementById("resDescricao").textContent = "Erro na conexão: " + err;
+            });
     }
 </script>
 </body>

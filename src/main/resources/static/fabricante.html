@@ -176,13 +176,13 @@
         return fabricante;
     }
     function cadastrar() {
-        fetch("/api/bebidas/fabricante", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterFabricante(false)) })
+        fetchProtegido("/api/bebidas/fabricante", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterFabricante(false)) })
         .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function buscar() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para buscar!"); return; }
-        fetch("/api/bebidas/fabricante/" + id).then(r => r.json()).then(dados => {
+        fetchProtegido("/api/bebidas/fabricante/" + id).then(r => r.json()).then(dados => {
             if (dados.status === "Erro") { mostrarResultado(dados); return; }
             let fabricante = dados.object;
             document.getElementById("nome").value = fabricante.nome || ""; document.getElementById("cpf").value = fabricante.cpf || "";
@@ -196,17 +196,18 @@
     function atualizar() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para atualizar!"); return; }
-        fetch("/api/bebidas/fabricante/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterFabricante(true)) })
+        fetchProtegido("/api/bebidas/fabricante/" + id, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(obterFabricante(true)) })
         .then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function excluir() {
         let id = document.getElementById("id").value;
         if (!id) { alert("Informe o ID para excluir!"); return; }
-        fetch("/api/bebidas/fabricante/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetchProtegido("/api/bebidas/fabricante/" + id, { method: "DELETE" }).then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
     function listar() {
-        fetch("/api/bebidas/fabricante").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
+        fetchProtegido("/api/bebidas/fabricante").then(r => r.json()).then(d => mostrarResultado(d)).catch(err => { document.getElementById("resultado").textContent = "Erro: " + err; });
     }
 </script>
+<script src="acesso.js"></script>
 </body>
 </html>

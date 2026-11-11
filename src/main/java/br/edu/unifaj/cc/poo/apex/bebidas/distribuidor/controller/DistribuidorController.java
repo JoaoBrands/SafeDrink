@@ -4,11 +4,15 @@ import br.edu.unifaj.cc.poo.apex.bebidas.Retorno;
 import br.edu.unifaj.cc.poo.apex.bebidas.distribuidor.Distribuidor;
 import br.edu.unifaj.cc.poo.apex.bebidas.distribuidor.repository.DistribuidorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.unifaj.cc.poo.apex.bebidas.seguranca.ControleAcesso;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bebidas/distribuidor")
 public class DistribuidorController {
+
+    @Autowired
+    ControleAcesso controleAcesso;
 
     @Autowired
     DistribuidorRepository distribuidorRepository;
@@ -36,8 +40,9 @@ public class DistribuidorController {
     }
 
     @PostMapping
-    public Retorno incluir(@RequestBody Distribuidor distribuidor) {
+    public Retorno incluir(@RequestBody Distribuidor distribuidor, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             distribuidor.setId(null);
             return new Retorno(distribuidorRepository.save(distribuidor));
         } catch (Exception ex) {
@@ -46,8 +51,9 @@ public class DistribuidorController {
     }
 
     @PutMapping("/{id}")
-    public Retorno alterar(@PathVariable Integer id, @RequestBody Distribuidor distribuidor) {
+    public Retorno alterar(@PathVariable Integer id, @RequestBody Distribuidor distribuidor, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Distribuidor distribuidorExistente = distribuidorRepository.findById(id).orElse(null);
             if (distribuidorExistente == null) {
                 return new Retorno("Distribuidor não encontrado: " + id);
@@ -60,8 +66,9 @@ public class DistribuidorController {
     }
 
     @DeleteMapping("/{id}")
-    public Retorno excluir(@PathVariable Integer id) {
+    public Retorno excluir(@PathVariable Integer id, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Distribuidor distribuidor = distribuidorRepository.findById(id).orElse(null);
             if (distribuidor == null) {
                 return new Retorno("Distribuidor não encontrado: " + id);

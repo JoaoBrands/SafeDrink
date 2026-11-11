@@ -4,11 +4,15 @@ import br.edu.unifaj.cc.poo.apex.bebidas.Retorno;
 import br.edu.unifaj.cc.poo.apex.bebidas.bebida.Vinho;
 import br.edu.unifaj.cc.poo.apex.bebidas.bebida.repository.VinhoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import br.edu.unifaj.cc.poo.apex.bebidas.seguranca.ControleAcesso;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bebidas/vinho")
 public class VinhoController {
+
+    @Autowired
+    ControleAcesso controleAcesso;
 
     @Autowired
     VinhoRepository vinhoRepository;
@@ -36,8 +40,9 @@ public class VinhoController {
     }
 
     @PostMapping
-    public Retorno incluir(@RequestBody Vinho vinho) {
+    public Retorno incluir(@RequestBody Vinho vinho, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             vinho.setId(null);
             return new Retorno(vinhoRepository.save(vinho));
         } catch (Exception ex) {
@@ -46,8 +51,9 @@ public class VinhoController {
     }
 
     @PutMapping("/{id}")
-    public Retorno alterar(@PathVariable Integer id, @RequestBody Vinho vinho) {
+    public Retorno alterar(@PathVariable Integer id, @RequestBody Vinho vinho, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Vinho vinhoExistente = vinhoRepository.findById(id).orElse(null);
             if (vinhoExistente == null) {
                 return new Retorno("Vinho não encontrado: " + id);
@@ -60,8 +66,9 @@ public class VinhoController {
     }
 
     @DeleteMapping("/{id}")
-    public Retorno excluir(@PathVariable Integer id) {
+    public Retorno excluir(@PathVariable Integer id, @RequestHeader(value = "X-Chave-Escrita", required = false) String chave) {
         try {
+            controleAcesso.exigirChave(chave);
             Vinho vinho = vinhoRepository.findById(id).orElse(null);
             if (vinho == null) {
                 return new Retorno("Vinho não encontrado: " + id);
